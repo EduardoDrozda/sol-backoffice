@@ -42,6 +42,6 @@ import { AuthenticationGuard } from './authentication.guard';
 })
 export class AuthenticationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthenticationMiddleware).forRoutes('*');
+    consumer.apply(AuthenticationMiddleware).forRoutes('*splat');
   }
 }
