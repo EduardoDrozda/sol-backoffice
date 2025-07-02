@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id      String @id @default(cuid())
+  name    String
+  email   String
+  phone   String
+  address String
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  createdById  String?  @map("created_by")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  updatedById  String?  @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedById  String?   @map("deleted_by")
+
+  User      User[]
+
+  @@map("companies")
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String
+  email    String  @unique
+  phone    String
+  isActive Boolean @default(true) @map("is_active")
+  role     String  @default("user")
+  password String? @map("password")
+
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  createdById  String?  @map("created_by")
+  createdBy    User?    @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers User[]   @relation("UserCreatedBy")
+
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  updatedById  String?  @map("updated_by")
+  updatedBy    User?    @relation("UserUpdatedBy", fields: [updatedById], references: [id])
+  updatedUsers User[]   @relation("UserUpdatedBy")
+
+  deletedAt    DateTime? @map("deleted_at")
+  deletedById  String?   @map("deleted_by")
+  deletedBy    User?     @relation("UserDeletedBy", fields: [deletedById], references: [id])
+  deletedUsers User[]    @relation("UserDeletedBy")
+
+  @@map("users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  table     String
+  action    String   // 'CREATE', 'UPDATE', 'DELETE'
+  recordId  String
+  oldValue  Json?
+  newValue  Json?
+  userId    String?
+  createdAt DateTime @default(now())
+}
