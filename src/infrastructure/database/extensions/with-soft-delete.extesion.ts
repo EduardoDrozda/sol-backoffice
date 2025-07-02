@@ -4,7 +4,7 @@ function modelSupportsSoftDelete(args: any) {
   return !args?.where || 'deletedAt' in args.where || args.where?.deletedAt === undefined;
 }
 
-export const softDeleteExtension = Prisma.defineExtension((prisma) => {
+export const withSoftDelete = Prisma.defineExtension((prisma) => {
   return prisma.$extends({
     query: {
       $allModels: {

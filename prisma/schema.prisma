@@ -62,10 +62,13 @@ model User {
 model AuditLog {
   id        String   @id @default(cuid())
   table     String
-  action    String   // 'CREATE', 'UPDATE', 'DELETE'
+  action    String
   recordId  String
+  companyId String
   oldValue  Json?
   newValue  Json?
   userId    String?
   createdAt DateTime @default(now())
+
+  @@map("audit_logs")
 }

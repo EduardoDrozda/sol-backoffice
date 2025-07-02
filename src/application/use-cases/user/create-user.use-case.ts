@@ -26,7 +26,6 @@ export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, voi
     }
 
     const loggedUser = this.contextService.getUser();
-
     const hashedPassword = await this.hashService.hash(data.password);
 
     const user = await this.userRepository.create({
