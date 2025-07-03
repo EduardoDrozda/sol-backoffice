@@ -7,6 +7,7 @@ import { ContextModule } from '@common/context/context.module';
 
 import { USER_USE_CASES } from './user';
 import { AUTH_USE_CASES } from './auth';
+import { EXPENSE_CATEGORY_USE_CASES } from './expense-category';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { AUTH_USE_CASES } from './auth';
     RepositoriesModule,
     ContextModule
   ],
-  providers: [...USER_USE_CASES, ...AUTH_USE_CASES],
-  exports: [...USER_USE_CASES, ...AUTH_USE_CASES],
+  providers: [...USER_USE_CASES, ...AUTH_USE_CASES, ...EXPENSE_CATEGORY_USE_CASES],
+  exports: [...USER_USE_CASES, ...AUTH_USE_CASES, ...EXPENSE_CATEGORY_USE_CASES],
 })
 export class UseCasesModule {}

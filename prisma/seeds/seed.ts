@@ -1,4 +1,5 @@
 import { companySeed } from "./company.seed";
+import { expenseCategorySeed } from "./expense-category.seed";
 import { userSeed } from "./user.seed";
 
 ; (async () => {
@@ -7,7 +8,10 @@ import { userSeed } from "./user.seed";
 
   await userSeed()
     .catch((error) => console.error("Error seeding user:", error));
-    
+
+  await expenseCategorySeed()
+    .catch((error) => console.error("Error seeding expense category:", error));
+
 })().catch((error) => {
   console.error("An error occurred during seeding:", error);
   process.exit(1);
