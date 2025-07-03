@@ -38,11 +38,6 @@ export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, voi
         }
       },
       password: hashedPassword,
-      createdBy: {
-        connect: {
-          id: loggedUser!.id
-        }
-      }
     });
 
     this.loggerService.log(`User created with id: ${user.id}`);

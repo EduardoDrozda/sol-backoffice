@@ -17,14 +17,15 @@ model Company {
   phone   String
   address String
 
-  createdAt    DateTime @default(now()) @map("created_at")
-  createdById  String?  @map("created_by")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  updatedById  String?  @map("updated_by")
-  deletedAt    DateTime? @map("deleted_at")
-  deletedById  String?   @map("deleted_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  createdById String?   @map("created_by")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  updatedById String?   @map("updated_by")
+  deletedAt   DateTime? @map("deleted_at")
+  deletedById String?   @map("deleted_by")
 
-  User      User[]
+  User            User[]
+  ExpenseCategory ExpenseCategory[]
 
   @@map("companies")
 }
@@ -51,10 +52,14 @@ model User {
   updatedBy    User?    @relation("UserUpdatedBy", fields: [updatedById], references: [id])
   updatedUsers User[]   @relation("UserUpdatedBy")
 
-  deletedAt    DateTime? @map("deleted_at")
-  deletedById  String?   @map("deleted_by")
-  deletedBy    User?     @relation("UserDeletedBy", fields: [deletedById], references: [id])
-  deletedUsers User[]    @relation("UserDeletedBy")
+  deletedAt       DateTime?         @map("deleted_at")
+  deletedById     String?           @map("deleted_by")
+  deletedBy       User?             @relation("UserDeletedBy", fields: [deletedById], references: [id])
+  deletedUsers    User[]            @relation("UserDeletedBy")
+
+  createdExpenseCategories     ExpenseCategory[] @relation("UserCreatedBy")
+  updatedExpenseCategories     ExpenseCategory[] @relation("UserUpdatedBy")
+  deletedExpenseCategories     ExpenseCategory[] @relation("UserDeletedBy")
 
   @@map("users")
 }
@@ -71,4 +76,30 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   @@map("audit_logs")
+}
+
+model ExpenseCategory {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  icon        String?
+  color       String?
+
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  createdById String? @map("created_by")
+  createdBy   User?   @relation("UserCreatedBy", fields: [createdById], references: [id])
+
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedById String?  @map("updated_by")
+  updatedBy   User?    @relation("UserUpdatedBy", fields: [updatedById], references: [id])
+
+  deletedAt   DateTime? @map("deleted_at")
+  deletedById String?   @map("deleted_by")
+  deletedBy   User?     @relation("UserDeletedBy", fields: [deletedById], references: [id])
+
+  @@map("expense_categories")
 }
