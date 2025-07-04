@@ -1,6 +1,7 @@
 import { companySeed } from "./company.seed";
 import { costCenterSeed } from "./cost-center.seed";
 import { expenseCategorySeed } from "./expense-category.seed";
+import { groupsSeed } from "./group.seed";
 import { userSeed } from "./user.seed";
 
 ; (async () => {
@@ -15,6 +16,9 @@ import { userSeed } from "./user.seed";
 
   await costCenterSeed()
     .catch((error) => console.error("Error seeding cost center:", error));
+
+  await groupsSeed()
+    .catch((error) => console.error("Error seeding group:", error));
 
 })().catch((error) => {
   console.error("An error occurred during seeding:", error);

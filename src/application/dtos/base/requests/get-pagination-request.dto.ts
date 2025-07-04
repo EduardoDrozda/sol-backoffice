@@ -15,6 +15,4 @@ export class GetPaginationBaseDto {
 
   @IsOptional()
   search?: string;
-
-  userId?: string | null;
 }

@@ -27,6 +27,7 @@ model Company {
   User            User[]
   ExpenseCategory ExpenseCategory[]
   CostCenter      CostCenter[]
+  Group           Group[]
 
   @@map("companies")
 }
@@ -65,6 +66,10 @@ model User {
   CostCenter         CostCenter[] @relation("CostCenterCreatedBy")
   updatedCostCenters CostCenter[] @relation("CostCenterUpdatedBy")
   deletedCostCenters CostCenter[] @relation("CostCenterDeletedBy")
+  
+  createdGroups      Group[]      @relation("GroupCreatedBy")
+  updatedGroups      Group[]      @relation("GroupUpdatedBy")
+  deletedGroups      Group[]      @relation("GroupDeletedBy")
 
   @@map("users")
 }
@@ -130,4 +135,27 @@ model CostCenter {
   deletedBy   User?     @relation("CostCenterDeletedBy", fields: [deletedById], references: [id])
 
   @@map("cost_centers")
+}
+
+model Group {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdById String?  @map("created_by")
+  createdBy   User?    @relation("GroupCreatedBy", fields: [createdById], references: [id])
+
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedById String?  @map("updated_by")
+  updatedBy   User?    @relation("GroupUpdatedBy", fields: [updatedById], references: [id])
+
+  deletedAt   DateTime? @map("deleted_at")
+  deletedById String?   @map("deleted_by")
+  deletedBy   User?     @relation("GroupDeletedBy", fields: [deletedById], references: [id])
+
+  @@map("groups")
 }

@@ -1,9 +1,10 @@
-import { COST_CENTER_REPOSITORY, EXPENSE_CATEGORY_REPOSITORY, USER_REPOSITORY } from '@domain/interfaces/repositories';
+import { COST_CENTER_REPOSITORY, EXPENSE_CATEGORY_REPOSITORY, GROUP_REPOSITORY, USER_REPOSITORY } from '@domain/interfaces/repositories';
 import { Global, Module } from '@nestjs/common';
 import { DatabaseModule } from '@infrastructure/database';
 import { ExpenseCategoryRepository } from './expense-category.repository';
 import { UserRepository } from './user.repository';
 import { CostCenterRepository } from './cost-center.repository';
+import { GroupRepository } from './group.repository';
 
 @Global()
 @Module({
@@ -20,8 +21,17 @@ import { CostCenterRepository } from './cost-center.repository';
     {
       provide: COST_CENTER_REPOSITORY,
       useClass: CostCenterRepository
+    },
+    {
+      provide: GROUP_REPOSITORY,
+      useClass: GroupRepository
     }
   ],
-  exports: [USER_REPOSITORY, EXPENSE_CATEGORY_REPOSITORY, COST_CENTER_REPOSITORY]
+  exports: [
+    USER_REPOSITORY,
+    EXPENSE_CATEGORY_REPOSITORY,
+    COST_CENTER_REPOSITORY,
+    GROUP_REPOSITORY
+  ]
 })
 export class RepositoriesModule { }
