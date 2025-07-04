@@ -13,7 +13,9 @@ export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, voi
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
     private readonly contextService: ContextService
-  ) { }
+  ) { 
+    this.loggerService.context = this.constructor.name;
+  }
 
   async execute(data: CreateUserRequestDTO): Promise<void> {
     this.loggerService.log(`Creating user with data: ${JSON.stringify(data)}`);

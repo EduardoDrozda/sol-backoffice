@@ -1,2 +1,2 @@
 export * from './with-audit-log.extension';
-export * from './with-soft-delete.extesion';
+export * from './with-custom-operations.extension';

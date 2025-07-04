@@ -8,11 +8,11 @@ export function withAuditLog(contextService: ContextService) {
     name: 'audit-log',
     query: {
       $allModels: {
-        async $allOperations(args) {
-          const { model, operation, args: opArgs, query } = args;
-          const watchedOps = ['create', 'update', 'delete'];
+        async $allOperations({ model, operation, args: opArgs, query }) {
+          const isAuditable = ['create', 'update', 'delete'].includes(operation);
+          const isAuditLogModel = model === 'AuditLog';
 
-          if (!watchedOps.includes(operation) || model === 'AuditLog') {
+          if (!isAuditable || isAuditLogModel) {
             return query(opArgs);
           }
 
@@ -22,33 +22,40 @@ export function withAuditLog(contextService: ContextService) {
           let recordId: string = '';
 
           if ((operation === 'update' || operation === 'delete') && opArgs?.where?.id) {
-            oldValue = await (auditPrisma as any)[model].findUnique({ where: { id: opArgs.where.id } });
-            recordId = opArgs.where.id.toString();
+            
+            try {
+              oldValue = await (auditPrisma as any)[model].findUnique({
+                where: { id: opArgs.where.id },
+              });
+              recordId = opArgs.where.id.toString();
+            } catch (error) {
+              console.error(`Failed to fetch old value for ${model}:`, error);
+            }
           }
 
           const result = await query(opArgs);
 
-          if ((operation === 'create' || operation === 'update') && result && typeof result === 'object' && 'id' in result && result.id) {
+          if ((operation === 'create' || operation === 'update') && result && typeof result === 'object' && 'id' in result) {
             newValue = result;
-            if (!recordId) {
-              recordId = result.id.toString();
-            }
+            recordId = recordId || result.id?.toString() || '';
           }
 
-          const companyId = user?.companyId ?? 'unknown';
-          const userId = user?.id ?? null;
+          const valuesChanged = JSON.stringify(oldValue) !== JSON.stringify(newValue);
 
-          await (auditPrisma as any).auditLog.create({
-            data: {
-              table: model,
-              action: operation,
-              recordId,
-              companyId,
-              userId,
-              oldValue: oldValue as Prisma.InputJsonValue,
-              newValue: newValue as Prisma.InputJsonValue,
-            },
-          });
+          if (recordId && valuesChanged) {
+            const action = newValue.deletedAt ? 'delete' : operation;
+            await (auditPrisma as any).auditLog.create({
+              data: {
+                table: model,
+                action: action,
+                recordId,
+                companyId: user?.companyId ?? 'unknown',
+                userId: user?.id ?? null,
+                oldValue: oldValue as Prisma.InputJsonValue,
+                newValue: newValue as Prisma.InputJsonValue,
+              },
+            });
+          }
 
           return result;
         },

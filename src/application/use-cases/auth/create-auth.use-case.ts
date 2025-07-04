@@ -14,7 +14,9 @@ export class CreateAuthUseCase implements IBaseUseCase<CreateAuthRequestDTO, Get
     private readonly hashService: HashService,
     private readonly authenticationService: AuthenticationService,
     private readonly loggerService: LoggerService
-  ) { }
+  ) {
+    this.loggerService.context = this.constructor.name;
+   }
 
   async execute(data: CreateAuthRequestDTO): Promise<GetAuthResponseDTO> {
     this.loggerService.context = CreateAuthUseCase.name;

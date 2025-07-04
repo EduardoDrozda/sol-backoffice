@@ -2,10 +2,10 @@ import { IsOptional } from "class-validator";
 
 export class GetPaginationBaseDto {
   @IsOptional()
-  page?: number = 1;
+  page: number = 1;
 
   @IsOptional()
-  limit?: number = 10;
+  limit: number = 10;
 
   @IsOptional()
   sort?: string;
@@ -15,9 +15,6 @@ export class GetPaginationBaseDto {
 
   @IsOptional()
   search?: string;
-
-  @IsOptional()
-  filter?: Record<string, any>;
 
   userId?: string | null;
 }

@@ -5,10 +5,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '@infrastructure/interceptors';
 import { AuthenticationModule } from '@common/authentication';
 import { ExpenseCategoryController } from './controllers/expense-category.controller';
+import { CostCenterController } from './controllers/cost-center.controller';
 
 @Module({
   imports: [UseCasesModule, AuthenticationModule],
-  controllers: [UserController, AuthController, ExpenseCategoryController],
+  controllers: [UserController, AuthController, ExpenseCategoryController, CostCenterController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
