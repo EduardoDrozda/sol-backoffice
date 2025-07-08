@@ -37,7 +37,7 @@ model User {
   name     String
   email    String  @unique
   phone    String
-  isActive Boolean @default(true) @map("is_active")
+  isActive Boolean @default(false) @map("is_active")
   role     String  @default("user")
   password String? @map("password")
 
@@ -66,10 +66,10 @@ model User {
   CostCenter         CostCenter[] @relation("CostCenterCreatedBy")
   updatedCostCenters CostCenter[] @relation("CostCenterUpdatedBy")
   deletedCostCenters CostCenter[] @relation("CostCenterDeletedBy")
-  
-  createdGroups      Group[]      @relation("GroupCreatedBy")
-  updatedGroups      Group[]      @relation("GroupUpdatedBy")
-  deletedGroups      Group[]      @relation("GroupDeletedBy")
+
+  createdGroups Group[]   @relation("GroupCreatedBy")
+  updatedGroups Group[]   @relation("GroupUpdatedBy")
+  deletedGroups Group[]   @relation("GroupDeletedBy")
 
   @@map("users")
 }

@@ -5,7 +5,9 @@ import { Body, Controller, Post } from "@nestjs/common";
 
 @Controller()
 export class AuthController {
-  constructor(private readonly createAuthUseCase: CreateAuthUseCase) {}
+  constructor(
+    private readonly createAuthUseCase: CreateAuthUseCase,
+  ) { }
 
   @IsPublic()
   @Post('/login')

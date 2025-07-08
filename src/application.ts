@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import { EnviromentService } from "@common/enviroment";
 import { LoggerService } from "@common/logger";
 import { NestFactory } from "@nestjs/core";
+import * as cookieParser from "cookie-parser";
 
 export class Application {
   private server: INestApplication<AppModule>;
@@ -39,6 +40,8 @@ export class Application {
       origin: this.enviromentService.get("CORS_ORIGIN"),
       credentials: true,
     });
+
+    this.server.use(cookieParser(this.enviromentService.get("COOKIE_NAME")));
 
     this.server.enableVersioning({
       type: VersioningType.URI,

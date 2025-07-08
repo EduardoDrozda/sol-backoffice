@@ -7,9 +7,11 @@ import { AuthenticationModule } from '@common/authentication';
 import { ExpenseCategoryController } from './controllers/expense-category.controller';
 import { CostCenterController } from './controllers/cost-center.controller';
 import { GroupController } from './controllers/group.controller';
+import { EnviromentModule } from '@common/enviroment';
+import { CookieModule } from '@common/cookie/cookie.module';
 
 @Module({
-  imports: [UseCasesModule, AuthenticationModule],
+  imports: [UseCasesModule, AuthenticationModule, CookieModule, EnviromentModule],
   controllers: [
     UserController,
     AuthController,

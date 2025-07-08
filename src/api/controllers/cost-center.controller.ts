@@ -21,7 +21,7 @@ export class CostCenterController {
   }
 
   @Get()
-  async getAllCostCenters(
+  async getCostCenters(
     @Query() query: GetPaginationBaseDto
   ) {
     return this.getAllCostCenterUseCase.execute(query);

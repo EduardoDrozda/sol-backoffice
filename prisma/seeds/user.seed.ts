@@ -27,6 +27,7 @@ export async function userSeed() {
     email: "email@email.com",
     phone: "1234567890",
     password: await hashService.hash("password123"),
+    isActive: true,
     company: {
       connect: { id: company.id }
     },

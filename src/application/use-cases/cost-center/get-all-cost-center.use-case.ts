@@ -24,7 +24,6 @@ export class GetAllCostCenterUseCase
       .costCenterRepository
       .findAll(search);
 
-    return PaginationHelper.paginate<GetCostCenterResponseDto>(costCenters, page, limit!);
+    return PaginationHelper.paginate<GetCostCenterResponseDto>(costCenters, page, limit);
   }
-
 }

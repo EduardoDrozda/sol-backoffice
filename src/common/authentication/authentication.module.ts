@@ -14,7 +14,7 @@ import { AuthenticationGuard } from './authentication.guard';
       useFactory: (envService: EnviromentService) => ({
         secret: envService.get('JWT_SECRET'),
         signOptions: {
-          expiresIn: envService.get('JWT_EXPIRES_IN'),
+          expiresIn: envService.get('COOKIE_MAX_AGE'),
         }
       }),
       inject: [EnviromentService],

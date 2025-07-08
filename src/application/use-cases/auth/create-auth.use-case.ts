@@ -30,6 +30,11 @@ export class CreateAuthUseCase implements IBaseUseCase<CreateAuthRequestDTO, Get
       throw new UnauthorizedException("Invalid email or password");
     }
 
+    if (!existingUser.isActive) {
+      this.loggerService.error("User is not active");
+      throw new UnauthorizedException("User is not active");
+    }
+
     const token = await this
       .authenticationService
       .sign({

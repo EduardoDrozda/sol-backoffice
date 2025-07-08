@@ -5,7 +5,6 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   CORS_ORIGIN: z.string().default('*'),
   JWT_SECRET: z.string(),
-  JWT_EXPIRES_IN: z.string(),
   DATABASE_URL: z.string(),
   HASH_ROUNDS: z.coerce.number(),
   STORAGE_PROVIDER: z.enum(['local', 's3', 'gcs']).default('local'),
@@ -14,6 +13,13 @@ export const envSchema = z.object({
   STORAGE_SECRET_ACCESS_KEY: z.string(),
   STORAGE_BUCKET: z.string(),
   STORAGE_CREDENTIALS_FILE: z.string().optional(),
+  COOKIE_NAME: z.string(),
+  COOKIE_MAX_AGE: z.coerce.number().default(1000 * 60 * 60 * 24 * 20),
+  COOKIE_HTTP_ONLY: z.string().transform(val => val === 'true'),
+  COOKIE_SECURE: z.string().transform(val => val === 'true'),
+  COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('strict'),
+  COOKIE_PATH: z.string().default('/'),
+  COOKIE_DOMAIN: z.string().default('localhost'),
 }).refine((data) => {
   if (data.STORAGE_PROVIDER !== 'local' || data.NODE_ENV === 'production') {
     return !!data.STORAGE_CREDENTIALS_FILE;
