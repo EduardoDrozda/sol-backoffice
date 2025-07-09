@@ -38,7 +38,7 @@ export class Application {
 
     this.server.enableCors({
       origin: this.enviromentService.get("CORS_ORIGIN"),
-      credentials: true,
+      credentials: this.enviromentService.get("CORS_CREDENTIALS"),
     });
 
     this.server.use(cookieParser(this.enviromentService.get("COOKIE_NAME")));

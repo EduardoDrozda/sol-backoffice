@@ -39,6 +39,7 @@ export class CreateAuthUseCase implements IBaseUseCase<CreateAuthRequestDTO, Get
       .authenticationService
       .sign({
         id: existingUser.id,
+        name: existingUser.name,
         companyId: existingUser.companyId,
         role: existingUser.role
       })
