@@ -15,5 +15,5 @@ export const EXPENSE_CATEGORY_USE_CASES = [
   GetAllExpenseCategoryUseCase,
   GetByIdExpenseCategoryUseCase,
   UpdateExpenseCategoryUseCase,
-  DeleteByIdExpenseCategoryUseCase
-]
+  DeleteByIdExpenseCategoryUseCase,
+];

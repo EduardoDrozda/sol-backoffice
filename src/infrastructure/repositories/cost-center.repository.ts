@@ -1,25 +1,29 @@
-import { ICostCenterRepository } from "@domain/interfaces/repositories";
-import { CostCenterModel, CreateCostCenterInput, UpdateCostCenterInput } from "@domain/models";
-import { DatabaseService } from "@infrastructure/database";
-import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { ICostCenterRepository } from '@domain/interfaces/repositories';
+import {
+  CostCenterModel,
+  CreateCostCenterInput,
+  UpdateCostCenterInput,
+} from '@domain/models';
+import { DatabaseService } from '@infrastructure/database';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CostCenterRepository implements ICostCenterRepository {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   create(data: CreateCostCenterInput): Promise<CostCenterModel> {
     console.log(data);
     return this.databaseService.costCenter.create({
-      data
+      data,
     });
   }
 
   findAll(filter?: string): Promise<CostCenterModel[]> {
     const params: Prisma.CostCenterFindManyArgs = {
       orderBy: {
-        name: 'asc'
-      }
+        name: 'asc',
+      },
     };
 
     if (filter) {
@@ -28,17 +32,17 @@ export class CostCenterRepository implements ICostCenterRepository {
           {
             name: {
               contains: filter,
-              mode: "insensitive"
-            }
+              mode: 'insensitive',
+            },
           },
           {
             description: {
               contains: filter,
-              mode: "insensitive"
-            }
-          }
-        ]
-      }
+              mode: 'insensitive',
+            },
+          },
+        ],
+      };
     }
 
     return this.databaseService.costCenter.findMany(params);
@@ -47,8 +51,8 @@ export class CostCenterRepository implements ICostCenterRepository {
   findById(id: string): Promise<CostCenterModel | null> {
     return this.databaseService.costCenter.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
@@ -56,7 +60,7 @@ export class CostCenterRepository implements ICostCenterRepository {
     return this.databaseService.costCenter.findFirst({
       where: {
         name,
-      }
+      },
     });
   }
 
@@ -65,24 +69,23 @@ export class CostCenterRepository implements ICostCenterRepository {
 
     return this.databaseService.costCenter.update({
       where: {
-        id
+        id,
       },
       data: {
         name: data.name,
-        description
+        description,
       },
     });
   }
 
   async delete(id: string): Promise<void> {
-
     await this.databaseService.costCenter.update({
       where: {
         id,
       },
       data: {
         deletedAt: new Date(),
-      }
+      },
     });
   }
 }

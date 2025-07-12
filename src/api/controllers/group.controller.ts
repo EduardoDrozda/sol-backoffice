@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateGroupRequestDto } from '@application/dtos/group/request';
 import { UpdateGroupRequestDto } from '@application/dtos/group/request';
 import { CreateGroupUseCase } from '@application/use-cases/group/create-group.use-case';
@@ -6,9 +15,9 @@ import { GetAllGroupUseCase } from '@application/use-cases/group/get-all-group.u
 import { GetGroupByIdUseCase } from '@application/use-cases/group/get-group-by-id.use-case';
 import { UpdateGroupUseCase } from '@application/use-cases/group/update-group.use-case';
 import { DeleteGroupUseCase } from '@application/use-cases/group/delete-group.use-case';
-import { RolesEnum } from '@domain/enums';
-import { Roles } from '@infrastructure/decorators/role';
+import { PermissionsEnum } from '@domain/enums';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
+import { Permission } from '@infrastructure/decorators/permission';
 
 @Controller('groups')
 export class GroupController {
@@ -17,31 +26,32 @@ export class GroupController {
     private readonly getAllGroupUseCase: GetAllGroupUseCase,
     private readonly getGroupByIdUseCase: GetGroupByIdUseCase,
     private readonly updateGroupUseCase: UpdateGroupUseCase,
-    private readonly deleteGroupUseCase: DeleteGroupUseCase
+    private readonly deleteGroupUseCase: DeleteGroupUseCase,
   ) {}
 
   @Post()
-  @Roles(RolesEnum.ADMIN)
+  @Permission(PermissionsEnum.CREATE_GROUPS)
   async createGroup(@Body() createGroupDto: CreateGroupRequestDto) {
     return this.createGroupUseCase.execute(createGroupDto);
   }
 
   @Get()
-  async findAll(@Query() query: GetPaginationBaseDto)  {
+  @Permission(PermissionsEnum.VIEW_GROUPS)
+  async findAll(@Query() query: GetPaginationBaseDto) {
     return this.getAllGroupUseCase.execute(query);
   }
 
   @Get(':id')
-  @Roles(RolesEnum.ADMIN)
+  @Permission(PermissionsEnum.VIEW_GROUPS_BY_ID)
   async findById(@Param('id') id: string) {
     return this.getGroupByIdUseCase.execute(id);
   }
 
   @Patch(':id')
-  @Roles(RolesEnum.ADMIN)
+  @Permission(PermissionsEnum.UPDATE_GROUPS)
   async updateGroup(
     @Param('id') id: string,
-    @Body() updateGroupDto: UpdateGroupRequestDto
+    @Body() updateGroupDto: UpdateGroupRequestDto,
   ) {
     return this.updateGroupUseCase.execute({
       ...updateGroupDto,
@@ -50,7 +60,7 @@ export class GroupController {
   }
 
   @Delete(':id')
-  @Roles(RolesEnum.ADMIN)
+  @Permission(PermissionsEnum.DELETE_GROUPS)
   async deleteGroup(@Param('id') id: string) {
     return this.deleteGroupUseCase.execute(id);
   }

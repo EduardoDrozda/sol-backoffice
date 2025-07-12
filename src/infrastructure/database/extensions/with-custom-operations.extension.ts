@@ -1,5 +1,5 @@
-import { ContextService } from "@common/context";
-import { Prisma } from "@prisma/client";
+import { ContextService } from '@common/context';
+import { Prisma } from '@prisma/client';
 
 export const withCustomOperations = (contextService: ContextService) => {
   return Prisma.defineExtension((prisma) => {
@@ -48,7 +48,11 @@ export const withCustomOperations = (contextService: ContextService) => {
 
             const user = contextService.getUser();
 
-            args.where = { ...args.where, companyId: user?.companyId, deletedAt: null };;
+            args.where = {
+              ...args.where,
+              companyId: user?.companyId,
+              deletedAt: null,
+            };
 
             if (args.data.deletedAt) {
               args.data.deletedById = user?.id;
@@ -64,7 +68,11 @@ export const withCustomOperations = (contextService: ContextService) => {
 
             const user = contextService.getUser();
 
-            args.where = { ...args.where, companyId: user?.companyId, deletedAt: null };
+            args.where = {
+              ...args.where,
+              companyId: user?.companyId,
+              deletedAt: null,
+            };
 
             if (args.data.deletedAt) {
               args.data.deletedById = user?.id;
@@ -81,16 +89,8 @@ export const withCustomOperations = (contextService: ContextService) => {
             const user = contextService.getUser();
 
             if (model !== 'Company') {
-              args.data.createdBy = {
-                connect: {
-                  id: user?.id
-                }
-              }
-              args.data.company = {
-                connect: {
-                  id: user?.companyId
-                }
-              }
+              (args.data as any).createdById = user?.id;
+              (args.data as any).companyId = user?.companyId;
             }
 
             return query(args);
@@ -99,7 +99,11 @@ export const withCustomOperations = (contextService: ContextService) => {
             if (model === 'AuditLog') return query(args);
 
             const user = contextService.getUser();
-            args.where = { ...args.where, companyId: user?.companyId, deletedAt: null };
+            args.where = {
+              ...args.where,
+              companyId: user?.companyId,
+              deletedAt: null,
+            };
 
             return query(args);
           },

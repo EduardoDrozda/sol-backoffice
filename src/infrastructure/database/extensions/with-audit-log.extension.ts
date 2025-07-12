@@ -9,7 +9,9 @@ export function withAuditLog(contextService: ContextService) {
     query: {
       $allModels: {
         async $allOperations({ model, operation, args: opArgs, query }) {
-          const isAuditable = ['create', 'update', 'delete'].includes(operation);
+          const isAuditable = ['create', 'update', 'delete'].includes(
+            operation,
+          );
           const isAuditLogModel = model === 'AuditLog';
 
           if (!isAuditable || isAuditLogModel) {
@@ -21,13 +23,33 @@ export function withAuditLog(contextService: ContextService) {
           let newValue: any = null;
           let recordId: string = '';
 
-          if ((operation === 'update' || operation === 'delete') && opArgs?.where?.id) {
-            
+          if (
+            (operation === 'update' || operation === 'delete') &&
+            opArgs?.where
+          ) {
             try {
-              oldValue = await (auditPrisma as any)[model].findUnique({
-                where: { id: opArgs.where.id },
-              });
-              recordId = opArgs.where.id.toString();
+              // Handle RolePermission model which has composite key
+              if (
+                model === 'RolePermission' &&
+                opArgs.where.roleId &&
+                opArgs.where.permissionId
+              ) {
+                oldValue = await (auditPrisma as any)[model].findUnique({
+                  where: {
+                    roleId_permissionId: {
+                      roleId: opArgs.where.roleId,
+                      permissionId: opArgs.where.permissionId,
+                    },
+                  },
+                });
+                recordId = `${opArgs.where.roleId}_${opArgs.where.permissionId}`;
+              } else if ((opArgs.where as any).id) {
+                // Handle other models with single id
+                oldValue = await (auditPrisma as any)[model].findUnique({
+                  where: { id: (opArgs.where as any).id },
+                });
+                recordId = (opArgs.where as any).id.toString();
+              }
             } catch (error) {
               console.error(`Failed to fetch old value for ${model}:`, error);
             }
@@ -35,12 +57,27 @@ export function withAuditLog(contextService: ContextService) {
 
           const result = await query(opArgs);
 
-          if ((operation === 'create' || operation === 'update') && result && typeof result === 'object' && 'id' in result) {
+          if (
+            (operation === 'create' || operation === 'update') &&
+            result &&
+            typeof result === 'object'
+          ) {
             newValue = result;
-            recordId = recordId || result.id?.toString() || '';
+            // Handle RolePermission model which has composite key
+            if (
+              model === 'RolePermission' &&
+              'roleId' in result &&
+              'permissionId' in result
+            ) {
+              recordId = recordId || `${result.roleId}_${result.permissionId}`;
+            } else if ('id' in result) {
+              // Handle other models with single id
+              recordId = recordId || result.id?.toString() || '';
+            }
           }
 
-          const valuesChanged = JSON.stringify(oldValue) !== JSON.stringify(newValue);
+          const valuesChanged =
+            JSON.stringify(oldValue) !== JSON.stringify(newValue);
 
           if (recordId && valuesChanged) {
             const action = newValue.deletedAt ? 'delete' : operation;

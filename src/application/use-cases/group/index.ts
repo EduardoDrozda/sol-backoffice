@@ -15,5 +15,5 @@ export const GROUP_USE_CASES = [
   GetGroupByIdUseCase,
   GetAllGroupUseCase,
   UpdateGroupUseCase,
-  DeleteGroupUseCase
-]; 
+  DeleteGroupUseCase,
+];

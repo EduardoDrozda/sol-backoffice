@@ -11,7 +11,7 @@ export async function expenseCategorySeed() {
   }
 
   const user = await prisma.user.findFirst({
-    where: { email: "email@email.com" },
+    where: { email: "admin@email.com" },
   });
 
   if (!user) {

@@ -1,12 +1,15 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { IS_PUBLIC_KEY } from "./is-public.decorator";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from './is-public.decorator';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-  ) { }
+  constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     if (this.verifyIsPublic(context)) {

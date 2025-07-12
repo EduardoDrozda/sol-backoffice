@@ -1,4 +1,4 @@
-import { CreateGroupInput, GroupModel, UpdateGroupInput } from "@domain/models";
+import { CreateGroupInput, GroupModel, UpdateGroupInput } from '@domain/models';
 
 export const GROUP_REPOSITORY = Symbol('GROUP_REPOSITORY');
 

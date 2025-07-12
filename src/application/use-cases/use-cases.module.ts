@@ -13,25 +13,25 @@ import { GROUP_USE_CASES } from './group';
 
 @Module({
   imports: [
-    LoggerModule, 
-    HashModule, 
+    LoggerModule,
+    HashModule,
     AuthenticationModule,
     RepositoriesModule,
-    ContextModule
+    ContextModule,
   ],
   providers: [
-    ...USER_USE_CASES, 
-    ...AUTH_USE_CASES, 
-    ...EXPENSE_CATEGORY_USE_CASES, 
+    ...USER_USE_CASES,
+    ...AUTH_USE_CASES,
+    ...EXPENSE_CATEGORY_USE_CASES,
     ...COST_CENTER_USE_CASES,
-    ...GROUP_USE_CASES
+    ...GROUP_USE_CASES,
   ],
   exports: [
-    ...USER_USE_CASES, 
-    ...AUTH_USE_CASES, 
-    ...EXPENSE_CATEGORY_USE_CASES, 
+    ...USER_USE_CASES,
+    ...AUTH_USE_CASES,
+    ...EXPENSE_CATEGORY_USE_CASES,
     ...COST_CENTER_USE_CASES,
-    ...GROUP_USE_CASES
+    ...GROUP_USE_CASES,
   ],
 })
 export class UseCasesModule {}

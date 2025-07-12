@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateGroupRequestDto {
   @IsString()
@@ -8,4 +8,4 @@ export class CreateGroupRequestDto {
   @IsString()
   @IsOptional()
   description: string | null;
-} 
+}

@@ -1,4 +1,4 @@
-import { Group, Prisma } from "@prisma/client";
+import { Group, Prisma } from '@prisma/client';
 
 export type GroupModel = Group;
 

@@ -1,4 +1,4 @@
-import { CostCenter, Prisma } from "@prisma/client";
+import { CostCenter, Prisma } from '@prisma/client';
 
 export type CostCenterModel = CostCenter;
 

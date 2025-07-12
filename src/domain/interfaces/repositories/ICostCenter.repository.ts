@@ -1,4 +1,8 @@
-import { CostCenterModel, CreateCostCenterInput, UpdateCostCenterInput } from "@domain/models";
+import {
+  CostCenterModel,
+  CreateCostCenterInput,
+  UpdateCostCenterInput,
+} from '@domain/models';
 
 export const COST_CENTER_REPOSITORY = Symbol('ICostCenterRepository');
 

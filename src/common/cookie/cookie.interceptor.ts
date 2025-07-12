@@ -1,4 +1,9 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { map, Observable, tap } from 'rxjs';
 import { CookieService } from './cookie.service';
 import { Response } from 'express';
@@ -17,9 +22,11 @@ export class CookieInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         const response = context.switchToHttp().getResponse<Response>();
-        const { name, value, options } = this.cookieService.getCookieConfig(data.token);
+        const { name, value, options } = this.cookieService.getCookieConfig(
+          data.token,
+        );
         response.cookie(name, value, options);
-      })
+      }),
     );
   }
 }

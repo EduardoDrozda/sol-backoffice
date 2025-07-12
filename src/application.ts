@@ -1,24 +1,30 @@
-import { INestApplication, ValidationPipe, VersioningType } from "@nestjs/common";
-import { AppModule } from "./app.module";
-import { EnviromentService } from "@common/enviroment";
-import { LoggerService } from "@common/logger";
-import { NestFactory } from "@nestjs/core";
-import * as cookieParser from "cookie-parser";
+import {
+  INestApplication,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
+import { AppModule } from './app.module';
+import { EnviromentService } from '@common/enviroment';
+import { LoggerService } from '@common/logger';
+import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 
 export class Application {
   private server: INestApplication<AppModule>;
   private enviromentService: EnviromentService;
   private loggerService: LoggerService;
-  private readonly prefix: string = "api";
+  private readonly prefix: string = 'api';
 
   async startup(): Promise<void> {
     await this.setupApplication();
     await this.setGlobalScopes();
 
-    const port = this.enviromentService.get("APP_PORT") || 3000;
+    const port = this.enviromentService.get('APP_PORT') || 3000;
 
     await this.server.listen(port).catch((error) => {
-      this.loggerService.error(`Failed to start server on port ${port} - ${error.message}`);
+      this.loggerService.error(
+        `Failed to start server on port ${port} - ${error.message}`,
+      );
       process.exit(1);
     });
 
@@ -37,11 +43,11 @@ export class Application {
     this.server.setGlobalPrefix(this.prefix);
 
     this.server.enableCors({
-      origin: this.enviromentService.get("CORS_ORIGIN"),
-      credentials: this.enviromentService.get("CORS_CREDENTIALS"),
+      origin: this.enviromentService.get('CORS_ORIGIN'),
+      credentials: this.enviromentService.get('CORS_CREDENTIALS'),
     });
 
-    this.server.use(cookieParser(this.enviromentService.get("COOKIE_NAME")));
+    this.server.use(cookieParser(this.enviromentService.get('COOKIE_NAME')));
 
     this.server.enableVersioning({
       type: VersioningType.URI,
@@ -53,8 +59,9 @@ export class Application {
         transform: true,
         whitelist: true,
         forbidNonWhitelisted: true,
-        disableErrorMessages: this.enviromentService.get("NODE_ENV") === "production",
-      })
+        disableErrorMessages:
+          this.enviromentService.get('NODE_ENV') === 'production',
+      }),
     );
 
     this.server.useLogger(this.loggerService);

@@ -1,19 +1,23 @@
-import { IUserRepository } from "@domain/interfaces/repositories";
-import { CreateUserInput, UserModel } from "@domain/models";
-import { DatabaseService } from "@infrastructure/database";
-import { Injectable } from "@nestjs/common";
+import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/interfaces/repositories';
+import { CreateUserInput, UserModel, UserWithRelations } from '@domain/models';
+import { DatabaseService } from '@infrastructure/database';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly databaseService: DatabaseService) {}
 
-  async findByEmail(email: string): Promise<UserModel | null> {
+  async findByEmail(email: string, params?: IUserRepositoryFindByEmailParams): Promise<any | null> {
     return this.databaseService.user.findFirst({
       where: {
         email: {
           equals: email,
-          mode: "insensitive",
-        }
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        role: params?.includeRole,
+        company: params?.includeCompany,
       },
     });
   }
@@ -24,9 +28,13 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async findById(id: string): Promise<UserModel | null> {
+  async findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null> {
     return this.databaseService.user.findFirst({
       where: { id },
+      include: {
+        role: params?.includeRole,
+        company: params?.includeCompany,
+      },
     });
   }
 }

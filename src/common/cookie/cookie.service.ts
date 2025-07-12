@@ -4,7 +4,7 @@ import { CookieOptions } from 'express';
 
 @Injectable()
 export class CookieService {
-  constructor(private readonly env: EnviromentService) { }
+  constructor(private readonly env: EnviromentService) {}
 
   getCookieConfig(token: string): {
     name: string;

@@ -1,19 +1,24 @@
-import { CreateUserRequestDTO } from "@application/dtos/user/requests";
-import { HashService } from "@common/hash";
-import { LoggerService } from "@common/logger";
-import { IUserRepository, USER_REPOSITORY } from "@domain/interfaces/repositories";
-import { ConflictException, Inject, Injectable } from "@nestjs/common";
-import { IBaseUseCase } from "../IBase.use-case";
-import { ContextService } from "@common/context/context.service";
+import { CreateUserRequestDTO } from '@application/dtos/user/requests';
+import { HashService } from '@common/hash';
+import { LoggerService } from '@common/logger';
+import {
+  IUserRepository,
+  USER_REPOSITORY,
+} from '@domain/interfaces/repositories';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { IBaseUseCase } from '../IBase.use-case';
+import { ContextService } from '@common/context/context.service';
 
 @Injectable()
-export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, void> {
+export class CreateUserUseCase
+  implements IBaseUseCase<CreateUserRequestDTO, void>
+{
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService
-  ) { 
+    private readonly contextService: ContextService,
+  ) {
     this.loggerService.context = this.constructor.name;
   }
 
@@ -24,7 +29,7 @@ export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, voi
 
     if (findedUser) {
       this.loggerService.warn(`User with email ${data.email} already exists.`);
-      throw new ConflictException("User already exists");
+      throw new ConflictException('User already exists');
     }
 
     const loggedUser = this.contextService.getUser();
@@ -36,8 +41,8 @@ export class CreateUserUseCase implements IBaseUseCase<CreateUserRequestDTO, voi
       phone: data.phone,
       company: {
         connect: {
-          id: loggedUser!.companyId
-        }
+          id: loggedUser!.companyId,
+        },
       },
       password: hashedPassword,
     });

@@ -1,4 +1,4 @@
-import { BaseResponseDto } from "@application/dtos/base/response";
+import { BaseResponseDto } from '@application/dtos/base/response';
 
 export type GetCostCenterResponseDto = {
   name: string;

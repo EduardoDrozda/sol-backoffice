@@ -2,11 +2,15 @@ import { companySeed } from "./company.seed";
 import { costCenterSeed } from "./cost-center.seed";
 import { expenseCategorySeed } from "./expense-category.seed";
 import { groupsSeed } from "./group.seed";
+import { rolesSeed } from "./role.seed";
 import { userSeed } from "./user.seed";
 
 ; (async () => {
   await companySeed()
     .catch((error) => console.error("Error seeding company:", error));
+
+  await rolesSeed()
+    .catch((error) => console.error("Error seeding roles:", error));
 
   await userSeed()
     .catch((error) => console.error("Error seeding user:", error));

@@ -13,15 +13,11 @@ export class AuthenticationService {
     private readonly jwt: JwtService,
   ) {}
 
-  async sign(
-    payload: Record<string, any>
-  ): Promise<string> {
+  async sign(payload: Record<string, any>): Promise<string> {
     return this.jwt.signAsync(payload, this.params);
   }
 
-  async verify(
-    token: string,
-  ): Promise<Record<string, any>> {
+  async verify(token: string): Promise<Record<string, any>> {
     return this.jwt.verifyAsync(token, this.params);
   }
 }

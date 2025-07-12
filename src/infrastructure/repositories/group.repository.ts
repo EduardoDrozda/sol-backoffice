@@ -1,23 +1,22 @@
-import { CreateGroupInput, GroupModel, UpdateGroupInput } from "@domain/models";
-import { IGroupRepository } from "@domain/interfaces/repositories";
-import { DatabaseService } from "@infrastructure/database/database.service";
-import { Injectable } from "@nestjs/common";
+import { CreateGroupInput, GroupModel, UpdateGroupInput } from '@domain/models';
+import { IGroupRepository } from '@domain/interfaces/repositories';
+import { DatabaseService } from '@infrastructure/database/database.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GroupRepository implements IGroupRepository {
-
   constructor(private readonly databaseService: DatabaseService) {}
-  
+
   async create(data: CreateGroupInput): Promise<GroupModel> {
     return await this.databaseService.group.create({
-      data
+      data,
     });
   }
 
   async update(id: string, data: UpdateGroupInput): Promise<GroupModel> {
     return await this.databaseService.group.update({
       where: { id },
-      data
+      data,
     });
   }
 
@@ -54,7 +53,7 @@ export class GroupRepository implements IGroupRepository {
       where: { id },
       data: {
         deletedAt: new Date(),
-      }
+      },
     });
   }
 }

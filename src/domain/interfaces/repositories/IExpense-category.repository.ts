@@ -1,5 +1,8 @@
-import { CreateExpenseCategoryInput, ExpenseCategoryModel, UpdateExpenseCategoryInput } from "@domain/models/expense-category.model";
-
+import {
+  CreateExpenseCategoryInput,
+  ExpenseCategoryModel,
+  UpdateExpenseCategoryInput,
+} from '@domain/models/expense-category.model';
 
 export const EXPENSE_CATEGORY_REPOSITORY = Symbol('IExpenseCategoryRepository');
 

@@ -3,9 +3,6 @@ import { EnviromentModule } from '@common/enviroment';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [
-    EnviromentModule,
-    ApiModule,
-  ],
+  imports: [EnviromentModule, ApiModule],
 })
-export class AppModule { }
+export class AppModule {}

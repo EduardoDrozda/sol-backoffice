@@ -1,18 +1,22 @@
-import { IExpenseCategoryRepository } from "@domain/interfaces/repositories";
-import { CreateExpenseCategoryInput, ExpenseCategoryModel, UpdateExpenseCategoryInput } from "@domain/models/expense-category.model";
-import { DatabaseService } from "@infrastructure/database";
-import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { IExpenseCategoryRepository } from '@domain/interfaces/repositories';
+import {
+  CreateExpenseCategoryInput,
+  ExpenseCategoryModel,
+  UpdateExpenseCategoryInput,
+} from '@domain/models/expense-category.model';
+import { DatabaseService } from '@infrastructure/database';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   findAll(filter?: string): Promise<ExpenseCategoryModel[]> {
     const params: Prisma.ExpenseCategoryFindManyArgs = {
       orderBy: {
-        name: 'asc'
-      }
+        name: 'asc',
+      },
     };
 
     if (filter) {
@@ -21,17 +25,17 @@ export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
           {
             name: {
               contains: filter,
-              mode: "insensitive"
-            }
+              mode: 'insensitive',
+            },
           },
           {
             description: {
               contains: filter,
-              mode: "insensitive"
-            }
-          }
-        ]
-      }
+              mode: 'insensitive',
+            },
+          },
+        ],
+      };
     }
 
     return this.databaseService.expenseCategory.findMany(params);
@@ -40,8 +44,8 @@ export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
   findById(id: string): Promise<ExpenseCategoryModel | null> {
     return this.databaseService.expenseCategory.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
@@ -50,18 +54,18 @@ export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
       where: {
         name: {
           equals: name,
-          mode: "insensitive"
-        }
-      }
+          mode: 'insensitive',
+        },
+      },
     });
   }
 
   update(data: UpdateExpenseCategoryInput): Promise<ExpenseCategoryModel> {
     return this.databaseService.expenseCategory.update({
       where: {
-        id: data.id as string
+        id: data.id as string,
       },
-      data
+      data,
     });
   }
 
@@ -72,9 +76,11 @@ export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
     });
   }
 
-  async create(data: CreateExpenseCategoryInput): Promise<ExpenseCategoryModel> {
+  async create(
+    data: CreateExpenseCategoryInput,
+  ): Promise<ExpenseCategoryModel> {
     return this.databaseService.expenseCategory.create({
-      data
+      data,
     });
   }
 }

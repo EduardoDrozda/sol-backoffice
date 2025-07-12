@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { NextFunction, Request } from 'express';
 import { ContextService } from '@common/context/context.service';
@@ -10,7 +14,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
     private readonly jwtService: AuthenticationService,
     private readonly contextService: ContextService,
     private readonly enviroment: EnviromentService,
-  ) { }
+  ) {}
 
   async use(req: Request, _: Response, next: NextFunction) {
     const token = req.cookies[this.enviroment.get('COOKIE_NAME')];
@@ -24,11 +28,14 @@ export class AuthenticationMiddleware implements NestMiddleware {
       const payload = await this.jwtService.verify(token);
       req.user = payload as { id: string; role: string; companyId: string };
 
-      this.contextService.run({
-        companyId: payload.companyId,
-        id: payload.id,
-        role: payload.role,
-      }, () => next());
+      this.contextService.run(
+        {
+          companyId: payload.companyId,
+          id: payload.id,
+          role: payload.role,
+        },
+        () => next(),
+      );
     } catch {
       next();
     }

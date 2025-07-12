@@ -1,6 +1,6 @@
 export type BaseResponseDto = {
   id: string;
-  
+
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date | null;
@@ -8,7 +8,7 @@ export type BaseResponseDto = {
   createdBy?: string | null;
   updatedBy?: string | null;
   companyId?: string;
-}
+};
 
 export type BaseResponseWithPaginationDto<T> = {
   data: T[];

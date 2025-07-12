@@ -1,4 +1,4 @@
-import { ExpenseCategory, Prisma } from "@prisma/client";
+import { ExpenseCategory, Prisma } from '@prisma/client';
 
 export type ExpenseCategoryModel = ExpenseCategory;
 

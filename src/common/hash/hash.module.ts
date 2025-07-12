@@ -4,14 +4,16 @@ import { EnviromentModule, EnviromentService } from '@common/enviroment';
 
 @Module({
   imports: [EnviromentModule],
-  providers: [{
-    provide: HashService,
-    useFactory: (env: EnviromentService) => {
-      const hashRounds = env.get('HASH_ROUNDS');
-      return new HashService(hashRounds);
+  providers: [
+    {
+      provide: HashService,
+      useFactory: (env: EnviromentService) => {
+        const hashRounds = env.get('HASH_ROUNDS');
+        return new HashService(hashRounds);
+      },
+      inject: [EnviromentService],
     },
-    inject: [EnviromentService],
-  }],
+  ],
   exports: [HashService],
 })
 export class HashModule {}

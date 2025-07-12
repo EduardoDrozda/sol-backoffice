@@ -5,10 +5,10 @@ type ContextUser = {
   id: string;
   companyId: string;
   role: string;
-}
+};
 
 type Context = {
-  user: ContextUser
+  user: ContextUser;
 };
 
 @Injectable()

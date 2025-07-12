@@ -10,8 +10,8 @@ import { CookieInterceptor } from './cookie.interceptor';
     CookieService,
     {
       provide: APP_INTERCEPTOR,
-      useClass: CookieInterceptor
-    }
+      useClass: CookieInterceptor,
+    },
   ],
   exports: [CookieService],
 })

@@ -1,4 +1,4 @@
-import { IsHexColor, IsOptional } from "class-validator";
+import { IsHexColor, IsOptional } from 'class-validator';
 
 export class UpdateExpenseCategoryRequestDto {
   id: string;

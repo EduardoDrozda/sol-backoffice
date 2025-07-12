@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { EnviromentModule, EnviromentService } from '@common/enviroment';
@@ -15,28 +20,29 @@ import { AuthenticationGuard } from './authentication.guard';
         secret: envService.get('JWT_SECRET'),
         signOptions: {
           expiresIn: envService.get('COOKIE_MAX_AGE'),
-        }
+        },
       }),
       inject: [EnviromentService],
     }),
     EnviromentModule,
-    ContextModule
+    ContextModule,
   ],
   providers: [
     {
       provide: AuthenticationService,
-      useFactory: (jwtService: JwtService, envService: EnviromentService) => new AuthenticationService(
-        {
-          secret: envService.get('JWT_SECRET'),
-        },
-        jwtService,
-      ),
+      useFactory: (jwtService: JwtService, envService: EnviromentService) =>
+        new AuthenticationService(
+          {
+            secret: envService.get('JWT_SECRET'),
+          },
+          jwtService,
+        ),
       inject: [JwtService, EnviromentService],
     },
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
-    }
+    },
   ],
   exports: [AuthenticationService],
 })

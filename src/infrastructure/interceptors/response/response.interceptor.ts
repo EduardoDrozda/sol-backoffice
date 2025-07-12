@@ -1,6 +1,10 @@
-
 import { IBaseResponse } from '@domain/interfaces/general/base-response';
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 
 @Injectable()

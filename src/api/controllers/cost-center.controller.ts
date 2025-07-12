@@ -1,29 +1,31 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
-import { RolesEnum } from "@domain/enums";
-import { Roles } from "@infrastructure/decorators/role";
-import { CreateCostCenterRequestDto } from "@application/dtos/cost-center/request";
-import { CreateCostCenterUseCase, GetAllCostCenterUseCase } from "@application/use-cases/cost-center";
-import { GetPaginationBaseDto } from "@application/dtos/base/requests";
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { PermissionsEnum, RolesEnum } from '@domain/enums';
+import { CreateCostCenterRequestDto } from '@application/dtos/cost-center/request';
+import {
+  CreateCostCenterUseCase,
+  GetAllCostCenterUseCase,
+} from '@application/use-cases/cost-center';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
+import { Permission } from '@infrastructure/decorators/permission';
 
 @Controller('cost-centers')
 export class CostCenterController {
   constructor(
     private readonly createCostCenterUseCase: CreateCostCenterUseCase,
-    private readonly getAllCostCenterUseCase: GetAllCostCenterUseCase
-  ) { }
+    private readonly getAllCostCenterUseCase: GetAllCostCenterUseCase,
+  ) {}
 
   @Post()
-  @Roles(RolesEnum.ADMIN)
+  @Permission(PermissionsEnum.CREATE_COST_CENTERS)
   async createCostCenter(
-    @Body() createCostCenterDto: CreateCostCenterRequestDto
+    @Body() createCostCenterDto: CreateCostCenterRequestDto,
   ) {
     return this.createCostCenterUseCase.execute(createCostCenterDto);
   }
 
   @Get()
-  async getCostCenters(
-    @Query() query: GetPaginationBaseDto
-  ) {
+  @Permission(PermissionsEnum.VIEW_COST_CENTERS)
+  async getCostCenters(@Query() query: GetPaginationBaseDto) {
     return this.getAllCostCenterUseCase.execute(query);
   }
 }

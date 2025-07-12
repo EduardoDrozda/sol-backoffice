@@ -4,11 +4,9 @@ import { Prisma } from "@prisma/client";
 export async function companySeed() {
   const prisma = new PrismaClient();
 
-  const isProduction = process.env.NODE_ENV === "production";
-
   const hasData = await prisma.company.findFirst();
 
-  if (isProduction || hasData) {
+  if (hasData) {
     console.log("Company already exists in the table, skipping seed.");
     return;
   }

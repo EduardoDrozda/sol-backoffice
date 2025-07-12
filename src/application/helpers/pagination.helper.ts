@@ -1,10 +1,10 @@
-import { BaseResponseWithPaginationDto } from "@application/dtos/base/response";
+import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 
 export abstract class PaginationHelper {
   static paginate<T>(
     items: T[],
     page: number,
-    limit: number
+    limit: number,
   ): BaseResponseWithPaginationDto<T> {
     const offset = (page - 1) * limit;
     const paginatedItems = items.slice(offset, offset + limit);
@@ -18,7 +18,7 @@ export abstract class PaginationHelper {
       limit,
       totalPages: totalPages,
       hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1
+      hasPreviousPage: page > 1,
     };
   }
 }

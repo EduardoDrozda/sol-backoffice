@@ -1,4 +1,4 @@
-import { IsHexColor, IsNotEmpty, IsOptional } from "class-validator";
+import { IsHexColor, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateExpenseCategoryRequestDto {
   @IsNotEmpty()

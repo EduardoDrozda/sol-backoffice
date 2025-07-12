@@ -13,6 +13,6 @@ import { validate } from './config-schema';
     }),
   ],
   providers: [EnviromentService],
-  exports: [EnviromentService]
+  exports: [EnviromentService],
 })
 export class EnviromentModule {}
