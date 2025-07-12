@@ -7,6 +7,7 @@ import { AuthenticationModule } from '@common/authentication';
 import { ExpenseCategoryController } from './controllers/expense-category.controller';
 import { CostCenterController } from './controllers/cost-center.controller';
 import { GroupController } from './controllers/group.controller';
+import { ProjectController } from './controllers/project.controller';
 import { EnviromentModule } from '@common/enviroment';
 import { CookieModule } from '@common/cookie/cookie.module';
 import { PermissionGuard } from '@infrastructure/guards/permission/permission.guard';
@@ -24,6 +25,7 @@ import { PermissionGuard } from '@infrastructure/guards/permission/permission.gu
     ExpenseCategoryController,
     CostCenterController,
     GroupController,
+    ProjectController,
   ],
   providers: [
     {

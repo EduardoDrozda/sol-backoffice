@@ -85,14 +85,8 @@ export const withCustomOperations = (contextService: ContextService) => {
           },
           async create({ model, args, query }) {
             if (model === 'AuditLog') return query(args);
-
             const user = contextService.getUser();
-
-            if (model !== 'Company') {
-              (args.data as any).createdById = user?.id;
-              (args.data as any).companyId = user?.companyId;
-            }
-
+            (args.data as any).createdById = user?.id;
             return query(args);
           },
           async count({ model, args, query }) {

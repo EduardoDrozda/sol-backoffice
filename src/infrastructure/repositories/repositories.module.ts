@@ -2,6 +2,7 @@ import {
   COST_CENTER_REPOSITORY,
   EXPENSE_CATEGORY_REPOSITORY,
   GROUP_REPOSITORY,
+  PROJECT_REPOSITORY,
   ROLE_REPOSITORY,
   USER_REPOSITORY,
 } from '@domain/interfaces/repositories';
@@ -11,6 +12,7 @@ import { ExpenseCategoryRepository } from './expense-category.repository';
 import { UserRepository } from './user.repository';
 import { CostCenterRepository } from './cost-center.repository';
 import { GroupRepository } from './group.repository';
+import { ProjectRepository } from './project.repository';
 import { RoleRepository } from './role.repository';
 
 @Global()
@@ -37,12 +39,17 @@ import { RoleRepository } from './role.repository';
       provide: GROUP_REPOSITORY,
       useClass: GroupRepository,
     },
+    {
+      provide: PROJECT_REPOSITORY,
+      useClass: ProjectRepository,
+    },
   ],
   exports: [
     USER_REPOSITORY,
     EXPENSE_CATEGORY_REPOSITORY,
     COST_CENTER_REPOSITORY,
     GROUP_REPOSITORY,
+    PROJECT_REPOSITORY,
     ROLE_REPOSITORY,
   ],
 })

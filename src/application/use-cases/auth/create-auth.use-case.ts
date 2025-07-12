@@ -12,8 +12,7 @@ import { AuthenticationService } from '@common/authentication';
 
 @Injectable()
 export class CreateAuthUseCase
-  implements IBaseUseCase<CreateAuthRequestDTO, GetAuthResponseDTO>
-{
+  implements IBaseUseCase<CreateAuthRequestDTO, GetAuthResponseDTO> {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     private readonly hashService: HashService,
@@ -29,9 +28,11 @@ export class CreateAuthUseCase
 
     const { email, password } = data;
 
-    const existingUser = await this.userRepository.findByEmail(email, {
-      includeRole: true,
-    });
+    const existingUser = await this
+      .userRepository
+      .findByEmail(email, {
+        includeRole: true,
+      });
 
     if (
       !existingUser ||

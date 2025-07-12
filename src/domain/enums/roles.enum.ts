@@ -41,6 +41,12 @@ export const PermissionsEnum = {
   DELETE_GROUPS: 'delete_groups',
   VIEW_GROUPS: 'view_groups',
   VIEW_GROUPS_BY_ID: 'view_groups_by_id',
+
+  CREATE_PROJECTS: 'create_projects',
+  UPDATE_PROJECTS: 'update_projects',
+  DELETE_PROJECTS: 'delete_projects',
+  VIEW_PROJECTS: 'view_projects',
+  VIEW_PROJECTS_BY_ID: 'view_projects_by_id',
 };
 
 export type Permissions = (typeof PermissionsEnum)[keyof typeof PermissionsEnum];

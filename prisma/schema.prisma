@@ -41,6 +41,7 @@ model Company {
   Group           Group[]
   Role            Role[]
   Permission      Permission[]
+  Project         Project[]
 
   @@map("companies")
 }
@@ -99,7 +100,6 @@ model RolePermission {
   deletedById String?   @map("deleted_by")
 
   @@id([roleId, permissionId])
-
   @@map("role_permissions")
 }
 
@@ -121,8 +121,8 @@ model User {
   deletedAt   DateTime? @map("deleted_at")
   deletedById String?   @map("deleted_by")
 
-  role   Role?   @relation(fields: [roleId], references: [id])
-  roleId String?
+  role   Role?   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId String? @map("role_id")
 
   @@map("users")
 }
@@ -187,4 +187,24 @@ model Group {
   deletedById String?   @map("deleted_by")
 
   @@map("groups")
+}
+
+model Project {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdById String?  @map("created_by")
+
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedById String?  @map("updated_by")
+
+  deletedAt   DateTime? @map("deleted_at")
+  deletedById String?   @map("deleted_by")
+
+  @@map("projects")
 }

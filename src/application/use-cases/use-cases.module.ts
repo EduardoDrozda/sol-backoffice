@@ -10,6 +10,7 @@ import { AUTH_USE_CASES } from './auth';
 import { EXPENSE_CATEGORY_USE_CASES } from './expense-category';
 import { COST_CENTER_USE_CASES } from './cost-center';
 import { GROUP_USE_CASES } from './group';
+import { PROJECT_USE_CASES } from './project';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GROUP_USE_CASES } from './group';
     ...EXPENSE_CATEGORY_USE_CASES,
     ...COST_CENTER_USE_CASES,
     ...GROUP_USE_CASES,
+    ...PROJECT_USE_CASES,
   ],
   exports: [
     ...USER_USE_CASES,
@@ -32,6 +34,7 @@ import { GROUP_USE_CASES } from './group';
     ...EXPENSE_CATEGORY_USE_CASES,
     ...COST_CENTER_USE_CASES,
     ...GROUP_USE_CASES,
+    ...PROJECT_USE_CASES,
   ],
 })
 export class UseCasesModule {}

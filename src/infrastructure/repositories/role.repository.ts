@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class RoleRepository implements IRoleRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   async findById(id: string, includePermissions?: boolean): Promise<RoleModel | null> {
     return this.databaseService.role.findUnique({
@@ -20,9 +20,14 @@ export class RoleRepository implements IRoleRepository {
     });
   }
 
-  async findByName(name: string, includePermissions?: boolean): Promise<RoleModel | null> {
-    return this.databaseService.role.findUnique({
-      where: { name },
+  async findByName(name: string, includePermissions?: boolean): Promise<any | null> {
+    return this.databaseService.role.findFirst({
+      where: {
+        name: {
+          equals: name,
+          mode: 'insensitive',
+        },
+      },
       include: {
         permissions: {
           include: {
