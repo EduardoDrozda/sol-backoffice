@@ -3,17 +3,17 @@ import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@common/logger';
 import { EmailService, SendEmailOptions } from '@common/email';
-
+import { QueuesKeyEnum } from '@common/queue/queues-key.enum';
 
 @Injectable()
-@Processor('email')
+@Processor(QueuesKeyEnum.EMAIL)
 export class QueueEmailConsumer extends WorkerHost {
   constructor(
     private readonly loggerService: LoggerService,
     private readonly emailService: EmailService,
   ) {
     super();
-    
+
     this.loggerService.context = QueueEmailConsumer.name;
   }
 
@@ -21,6 +21,7 @@ export class QueueEmailConsumer extends WorkerHost {
     this.loggerService.log(`Process email to ${job.data.to}`);
 
     await this.emailService.sendWelcomeEmail(job.data.to, job.data.context);
+
     this.loggerService.log(`Email sent to ${job.data.to} with subject: ${job.data.subject}`);
     return true;
   }

@@ -7,10 +7,16 @@ import * as express from 'express';
 
 import { EnviromentService } from '@common/enviroment';
 import { QueuesKeyEnum } from '../queues-key.enum';
+import { LoggerService } from '@common/logger';
 
 @Injectable()
 export class BullBoardService implements OnModuleInit {
-  constructor(private readonly enviromentService: EnviromentService) {}
+  constructor(
+    private readonly enviromentService: EnviromentService,
+    private readonly loggerService: LoggerService,
+  ) {
+    this.loggerService.context = BullBoardService.name;
+  }
 
   onModuleInit() {
     const nodeEnv = this.enviromentService.get('NODE_ENV');
@@ -35,7 +41,7 @@ export class BullBoardService implements OnModuleInit {
     app.use('/admin/queues', serverAdapter.getRouter());
 
     app.listen(3001, () => {
-      console.log('Bull Board: http://localhost:3001/admin/queues');
+      this.loggerService.log('Bull Board running on http://localhost:3001/admin/queues');
     });
   }
 
