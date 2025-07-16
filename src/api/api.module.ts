@@ -4,6 +4,7 @@ import { UseCasesModule } from '@application/use-cases';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '@infrastructure/interceptors';
 import { AuthenticationModule } from '@common/authentication';
+import { EmailModule } from '@common/email';
 import { ExpenseCategoryController } from './controllers/expense-category.controller';
 import { CostCenterController } from './controllers/cost-center.controller';
 import { GroupController } from './controllers/group.controller';

@@ -1,6 +1,7 @@
 import { ContextService } from '@common/context';
 import { Prisma } from '@prisma/client';
 
+
 export const withCustomOperations = (contextService: ContextService) => {
   return Prisma.defineExtension((prisma) => {
     return prisma.$extends({
@@ -20,7 +21,7 @@ export const withCustomOperations = (contextService: ContextService) => {
             return query(args);
           },
           async findFirst({ model, args, query }) {
-            if (model === 'AuditLog') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
             const companyId = contextService.getUser()?.companyId;
             args.where = {
@@ -44,7 +45,7 @@ export const withCustomOperations = (contextService: ContextService) => {
             return query(args);
           },
           async update({ model, args, query }) {
-            if (model === 'AuditLog') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
             const user = contextService.getUser();
 
@@ -64,7 +65,7 @@ export const withCustomOperations = (contextService: ContextService) => {
             return query(args);
           },
           async updateMany({ model, args, query }) {
-            if (model === 'AuditLog') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
             const user = contextService.getUser();
 
@@ -84,13 +85,13 @@ export const withCustomOperations = (contextService: ContextService) => {
             return query(args);
           },
           async create({ model, args, query }) {
-            if (model === 'AuditLog') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
             const user = contextService.getUser();
             (args.data as any).createdById = user?.id;
             return query(args);
           },
           async count({ model, args, query }) {
-            if (model === 'AuditLog') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
             const user = contextService.getUser();
             args.where = {

@@ -28,6 +28,23 @@ export const envSchema = z
     COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('strict'),
     COOKIE_PATH: z.string().default('/'),
     COOKIE_DOMAIN: z.string().default('localhost'),
+
+    // Email configuration
+    EMAIL_HOST: z.string().default('smtp.resend.com'),
+    EMAIL_PORT: z.coerce.number().default(587),
+    EMAIL_SECURE: z.string().transform((val) => val === 'true').default('false'),
+    EMAIL_USER: z.string(),
+    EMAIL_PASSWORD: z.string(),
+    EMAIL_FROM_NAME: z.string().default('Sistema'),
+    EMAIL_FROM_ADDRESS: z.string(),
+    FRONTEND_URL: z.string().default('http://localhost:4200'),
+
+    // Redis configuration
+    REDIS_HOST: z.string().default('localhost'),
+    REDIS_PORT: z.coerce.number().default(6379),
+    REDIS_USERNAME: z.string().optional(),
+    REDIS_PASSWORD: z.string(),
+    REDIS_QUEUE_PREFIX: z.string().default('bull'),
   })
   .refine(
     (data) => {

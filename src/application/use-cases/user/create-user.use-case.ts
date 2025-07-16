@@ -8,6 +8,9 @@ import {
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '../IBase.use-case';
 import { ContextService } from '@common/context/context.service';
+import { EnviromentService } from '@common/enviroment';
+import { QueueEmailProducer } from '@common/queue/email/producers';
+import { SendEmailOptions } from '@common/email';
 
 @Injectable()
 export class CreateUserUseCase
@@ -18,6 +21,8 @@ export class CreateUserUseCase
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
     private readonly contextService: ContextService,
+    private readonly queueEmailProducer: QueueEmailProducer,
+    private readonly enviromentService: EnviromentService,
   ) {
     this.loggerService.context = this.constructor.name;
   }
@@ -48,5 +53,18 @@ export class CreateUserUseCase
     });
 
     this.loggerService.log(`User created with id: ${user.id}`);
+
+    const emailJob: SendEmailOptions = {
+      to: user.email,
+      subject: 'Welcome to Sol!',
+      template: 'welcome',
+      context: {
+        userName: user.name,
+        loginUrl: this.enviromentService.get('FRONTEND_URL'),
+      },
+    };
+
+    await this.queueEmailProducer.sendEmail(emailJob);
+    this.loggerService.log(`Email confirmation job sent to queue: ${user.email}`);
   }
 }

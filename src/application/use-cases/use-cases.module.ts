@@ -11,6 +11,8 @@ import { EXPENSE_CATEGORY_USE_CASES } from './expense-category';
 import { COST_CENTER_USE_CASES } from './cost-center';
 import { GROUP_USE_CASES } from './group';
 import { PROJECT_USE_CASES } from './project';
+import { QueueModule } from '@common/queue/queue.module';
+import { EnviromentModule } from '@common/enviroment';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { PROJECT_USE_CASES } from './project';
     AuthenticationModule,
     RepositoriesModule,
     ContextModule,
+    EnviromentModule,
+    QueueModule.register(),
   ],
   providers: [
     ...USER_USE_CASES,
