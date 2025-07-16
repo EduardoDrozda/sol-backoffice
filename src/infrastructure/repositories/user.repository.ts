@@ -1,5 +1,5 @@
 import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/interfaces/repositories';
-import { CreateUserInput, UserModel, UserWithRelations } from '@domain/models';
+import { CreateUserInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
 
@@ -34,7 +34,21 @@ export class UserRepository implements IUserRepository {
       include: {
         role: params?.includeRole,
         company: params?.includeCompany,
+        userTokens: params?.includeUserTokens
       },
+    });
+  }
+
+  async findByUserToken(token: string): Promise<UserTokenModel | null> {
+    return this.databaseService.userToken.findFirst({
+      where: { token }
+    });
+  }
+
+  async activateUser(id: string): Promise<void> {
+    await this.databaseService.user.update({
+      where: { id },
+      data: { isActive: true },
     });
   }
 }

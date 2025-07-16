@@ -20,7 +20,7 @@ export class EmailService {
   async sendWelcomeEmail(to: string | string[], context?: Record<string, any>): Promise<void> {
     await this.sendEmail({
       to,
-      subject: 'Bem-vindo ao nosso sistema!',
+      subject: 'Bem-vindo à Solúvel!',
       template: 'welcome',
       context,
     });
@@ -28,7 +28,6 @@ export class EmailService {
 
    private async sendEmail(options: SendEmailOptions): Promise<void> {
     const { to, subject, template, context = {}, attachments } = options;
-    console.log(to, subject, template, context, attachments);
 
     await this.mailerService.sendMail({
       to,

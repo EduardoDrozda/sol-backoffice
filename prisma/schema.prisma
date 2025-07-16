@@ -123,7 +123,7 @@ model User {
 
   role      Role?       @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId    String?     @map("role_id")
-  UserToken UserToken[]
+  userTokens UserToken[]
 
   @@map("users")
 }
@@ -135,6 +135,7 @@ model UserToken {
   type      String   @map("type")
 
   createdAt DateTime @default(now())
+  expiresAt DateTime? @map("expires_at")
 
   user User @relation(fields: [userId], references: [id])
 

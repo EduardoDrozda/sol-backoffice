@@ -11,11 +11,12 @@ import { ContextService } from '@common/context/context.service';
 import { EnviromentService } from '@common/enviroment';
 import { QueueEmailProducer } from '@common/queue/email/producers';
 import { SendEmailOptions } from '@common/email';
+import { UserModel } from '@domain/models';
+import { TokenTypeEnum } from '@domain/enums';
 
 @Injectable()
 export class CreateUserUseCase
-  implements IBaseUseCase<CreateUserRequestDTO, void>
-{
+  implements IBaseUseCase<CreateUserRequestDTO, void> {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     private readonly hashService: HashService,
@@ -40,6 +41,8 @@ export class CreateUserUseCase
     const loggedUser = this.contextService.getUser();
     const hashedPassword = await this.hashService.hash(data.password);
 
+    const emailConfirmationToken = await this.hashService.hash(data.email);
+
     const user = await this.userRepository.create({
       name: data.name,
       email: data.email,
@@ -49,22 +52,33 @@ export class CreateUserUseCase
           id: loggedUser!.companyId,
         },
       },
+      userTokens: {
+        create: {
+          token: emailConfirmationToken,
+          type: TokenTypeEnum.EMAIL_CONFIRMATION
+        }
+      },
       password: hashedPassword,
     });
 
     this.loggerService.log(`User created with id: ${user.id}`);
 
+    await this.sendWelcomeEmailToQueue(user, emailConfirmationToken);
+    this.loggerService.log(`Email confirmation job sent to queue: ${user.email}`);
+  }
+
+  private async sendWelcomeEmailToQueue(user: UserModel, emailConfirmationToken: string) {
+
     const emailJob: SendEmailOptions = {
       to: user.email,
-      subject: 'Welcome to Sol!',
+      subject: 'Bem-vindo à Solúvel!',
       template: 'welcome',
       context: {
         userName: user.name,
-        loginUrl: this.enviromentService.get('FRONTEND_URL'),
+        loginUrl: `${this.enviromentService.get('FRONTEND_URL')}/confirm-email?token=${emailConfirmationToken}`,
       },
     };
 
     await this.queueEmailProducer.sendEmail(emailJob);
-    this.loggerService.log(`Email confirmation job sent to queue: ${user.email}`);
   }
 }
