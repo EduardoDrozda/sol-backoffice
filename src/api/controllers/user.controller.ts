@@ -1,9 +1,9 @@
-import { ConfirmUserDTO, CreateUserRequestDTO, ForgotPasswordDTO } from '@application/dtos/user/requests';
-import { ConfirmUserUseCase, CreateUserUseCase, ForgotPasswordUseCase } from '@application/use-cases/user';
+import { ConfirmUserDTO, CreateUserRequestDTO, ForgotPasswordDTO, ResetPasswordDTO } from '@application/dtos/user/requests';
+import { ConfirmUserUseCase, CreateUserUseCase, ForgotPasswordUseCase, ResetPasswordUseCase } from '@application/use-cases/user';
 import { IsPublic } from '@common/authentication';
 import { PermissionsEnum, RolesEnum } from '@domain/enums';
 import { Permission } from '@infrastructure/decorators/permission';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 
 @Controller('users')
 export class UserController {
@@ -11,6 +11,7 @@ export class UserController {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly confirmUserUseCase: ConfirmUserUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {}
 
   @Post()
@@ -29,5 +30,11 @@ export class UserController {
   @IsPublic()
   async forgotPassword(@Body() forgotPasswordDTO: ForgotPasswordDTO) {
     return this.forgotPasswordUseCase.execute(forgotPasswordDTO);
+  }
+
+  @Patch('reset-password')
+  @IsPublic()
+  async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
+    return this.resetPasswordUseCase.execute(resetPasswordDTO);
   }
 }

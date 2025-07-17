@@ -1,4 +1,6 @@
 import { ContextService } from '@common/context';
+import { ForbiddenOperationException } from '@domain/exceptions';
+import { ForbiddenException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 
@@ -101,6 +103,14 @@ export const withCustomOperations = (contextService: ContextService) => {
             };
 
             return query(args);
+          },
+          async delete({ model, args, query }) {
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
+            throw new ForbiddenOperationException('This operation is not allowed');
+          },
+          async deleteMany({ model, args, query }) {
+            if (model === 'AuditLog' || model === 'UserToken') return query(args);
+            throw new ForbiddenOperationException('This operation is not allowed');
           },
         },
       },

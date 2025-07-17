@@ -58,4 +58,17 @@ export class UserRepository implements IUserRepository {
       data,
     });
   }
+
+  async updatePassword(id: string, password: string): Promise<void> {
+    await this.databaseService.user.update({
+      where: { id },
+      data: { password },
+    });
+  }
+
+  async deleteUserToken(token: string): Promise<void> {
+    await this.databaseService.userToken.deleteMany({
+      where: { token },
+    });
+  }
 }
