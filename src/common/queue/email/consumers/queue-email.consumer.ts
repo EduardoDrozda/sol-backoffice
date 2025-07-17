@@ -20,9 +20,14 @@ export class QueueEmailConsumer extends WorkerHost {
   async process(job: Job<SendEmailOptions>) {
     this.loggerService.log(`Process email to ${job.data.to}`);
 
-    await this.emailService.sendWelcomeEmail(job.data.to, job.data.context);
+    await this.emailService.sendEmail({
+      to: job.data.to,
+      context: job.data.context,
+      attachments: job.data.attachments,
+      type: job.data.type,
+    });
 
-    this.loggerService.log(`Email sent to ${job.data.to} with subject: ${job.data.subject}`);
+    this.loggerService.log(`Email sent to ${job.data.to}`);
     return true;
   }
 } 

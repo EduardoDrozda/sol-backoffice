@@ -1,10 +1,8 @@
-import { ConfirmUserDTO, CreateUserRequestDTO } from '@application/dtos/user/requests';
-import { ConfirmUserUseCase } from '@application/use-cases/user/confirm-user.use-case';
-import { CreateUserUseCase } from '@application/use-cases/user/create-user.use-case';
+import { ConfirmUserDTO, CreateUserRequestDTO, ForgotPasswordDTO } from '@application/dtos/user/requests';
+import { ConfirmUserUseCase, CreateUserUseCase, ForgotPasswordUseCase } from '@application/use-cases/user';
 import { IsPublic } from '@common/authentication';
 import { PermissionsEnum, RolesEnum } from '@domain/enums';
 import { Permission } from '@infrastructure/decorators/permission';
-import { Roles } from '@infrastructure/decorators/role';
 import { Body, Controller, Post } from '@nestjs/common';
 
 @Controller('users')
@@ -12,6 +10,7 @@ export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly confirmUserUseCase: ConfirmUserUseCase,
+    private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
   ) {}
 
   @Post()
@@ -24,5 +23,11 @@ export class UserController {
   @IsPublic()
   async confirmUser(@Body() confirmUserDTO: ConfirmUserDTO) {
     return this.confirmUserUseCase.execute(confirmUserDTO);
+  }
+
+  @Post('forgot-password')
+  @IsPublic()
+  async forgotPassword(@Body() forgotPasswordDTO: ForgotPasswordDTO) {
+    return this.forgotPasswordUseCase.execute(forgotPasswordDTO);
   }
 }

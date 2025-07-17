@@ -1,5 +1,6 @@
-import { CreateUserInput, UserTokenModel, UserWithRelations } from '@domain/models';
+import { CreateUserInput, CreateUserTokenInput, UserTokenModel, UserWithRelations } from '@domain/models';
 import { UserModel } from '@domain/models';
+import { PrismaClient } from '@prisma/client';
 
 export const USER_REPOSITORY = Symbol('IUserRepository');
 
@@ -19,4 +20,5 @@ export interface IUserRepository {
   findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
   findByUserToken(token: string): Promise<UserTokenModel | null>;
   activateUser(id: string): Promise<void>;
+  createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel>;
 }

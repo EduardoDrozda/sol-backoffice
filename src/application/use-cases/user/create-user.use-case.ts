@@ -10,9 +10,10 @@ import { IBaseUseCase } from '../IBase.use-case';
 import { ContextService } from '@common/context/context.service';
 import { EnviromentService } from '@common/enviroment';
 import { QueueEmailProducer } from '@common/queue/email/producers';
-import { SendEmailOptions } from '@common/email';
+import { EmailTypeEnum, SendEmailOptions } from '@common/email';
 import { UserModel } from '@domain/models';
 import { TokenTypeEnum } from '@domain/enums';
+
 
 @Injectable()
 export class CreateUserUseCase
@@ -71,8 +72,7 @@ export class CreateUserUseCase
 
     const emailJob: SendEmailOptions = {
       to: user.email,
-      subject: 'Bem-vindo à Solúvel!',
-      template: 'welcome',
+      type: EmailTypeEnum.WELCOME,
       context: {
         userName: user.name,
         loginUrl: `${this.enviromentService.get('FRONTEND_URL')}/confirm-email?token=${emailConfirmationToken}`,

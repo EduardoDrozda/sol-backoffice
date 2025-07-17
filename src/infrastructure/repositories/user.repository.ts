@@ -1,7 +1,8 @@
 import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/interfaces/repositories';
-import { CreateUserInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
+import { CreateUserInput, CreateUserTokenInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -49,6 +50,12 @@ export class UserRepository implements IUserRepository {
     await this.databaseService.user.update({
       where: { id },
       data: { isActive: true },
+    });
+  }
+
+  async createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel> {
+    return this.databaseService.userToken.create({
+      data,
     });
   }
 }

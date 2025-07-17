@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { EmailTemplateEnum, EmailTypeEnum } from './email-type.enum';
 
-export interface SendEmailOptions {
+export type SendEmailOptions = {
   to: string | string[];
-  subject: string;
-  template: string;
-  context?: Record<string, any>;
+  context?: any;
+  type: EmailTypeEnum;
   attachments?: Array<{
     filename: string;
     content: string | Buffer;
@@ -15,50 +15,39 @@ export interface SendEmailOptions {
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService) { }
 
-  async sendWelcomeEmail(to: string | string[], context?: Record<string, any>): Promise<void> {
-    await this.sendEmail({
+
+  async sendEmail(options: SendEmailOptions ): Promise<void> {
+    const { to, type, context = {}, attachments } = options;
+
+    const emailOptions = {
       to,
-      subject: 'Bem-vindo à Solúvel!',
-      template: 'welcome',
-      context,
-    });
-  }
-
-   private async sendEmail(options: SendEmailOptions): Promise<void> {
-    const { to, subject, template, context = {}, attachments } = options;
-
-    await this.mailerService.sendMail({
-      to,
-      subject,
-      template,
       context,
       attachments,
-    });
-  }
+    }
 
-  async sendPasswordResetEmail(to: string, resetToken: string): Promise<void> {
-    await this.sendEmail({
-      to,
-      subject: 'Redefinição de Senha',
-      template: 'password-reset',
-      context: {
-        resetUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`,
-        expiresIn: '1 hora',
-      },
-    });
-  }
-
-  async sendNotificationEmail(to: string, title: string, message: string): Promise<void> {
-    await this.sendEmail({
-      to,
-      subject: title,
-      template: 'notification',
-      context: {
-        title,
-        message,
-      },
-    });
+    switch (type) {
+      case EmailTypeEnum.WELCOME:
+        await this.mailerService.sendMail({
+          subject: 'Bem-vindo à Solúvel!',
+          template: EmailTemplateEnum.WELCOME,
+          ...emailOptions,
+        });
+        break;
+      case EmailTypeEnum.FORGOT_PASSWORD:
+        await this.mailerService.sendMail({
+          subject: 'Redefinição de Senha',
+          template: EmailTemplateEnum.FORGOT_PASSWORD,
+          ...emailOptions,
+          context: {
+            ...context,
+            expiresUnit: context.expiresAt > 1 ? 'horas' : 'hora',
+          }
+        });
+        break;
+      default:
+        throw new NotImplementedException('Tipo de email não suportado');
+    }
   }
 } 

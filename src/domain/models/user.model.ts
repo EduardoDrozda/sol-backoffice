@@ -4,6 +4,8 @@ export type UserModel = User;
 
 export type UserTokenModel = UserToken;
 
+export type CreateUserTokenInput = Prisma.UserTokenCreateInput;
+
 export type UserWithRelations = Prisma.UserGetPayload<{
   include: {
     role: boolean;
