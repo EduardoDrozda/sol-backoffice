@@ -3,7 +3,6 @@ import { LoggerModule } from '@common/logger';
 import { Module } from '@nestjs/common';
 import { AuthenticationModule } from '@common/authentication';
 import { RepositoriesModule } from '@infrastructure/repositories';
-import { ContextModule } from '@common/context/context.module';
 
 import { USER_USE_CASES } from './user';
 import { AUTH_USE_CASES } from './auth';
@@ -13,6 +12,7 @@ import { GROUP_USE_CASES } from './group';
 import { PROJECT_USE_CASES } from './project';
 import { QueueModule } from '@common/queue/queue.module';
 import { EnviromentModule } from '@common/enviroment';
+import { EXPENSES_USE_CASES } from './expense';
 
 @Module({
   imports: [
@@ -20,7 +20,6 @@ import { EnviromentModule } from '@common/enviroment';
     HashModule,
     AuthenticationModule,
     RepositoriesModule,
-    ContextModule,
     EnviromentModule,
     QueueModule.register(),
   ],
@@ -31,6 +30,7 @@ import { EnviromentModule } from '@common/enviroment';
     ...COST_CENTER_USE_CASES,
     ...GROUP_USE_CASES,
     ...PROJECT_USE_CASES,
+    ...EXPENSES_USE_CASES,
   ],
   exports: [
     ...USER_USE_CASES,
@@ -39,6 +39,7 @@ import { EnviromentModule } from '@common/enviroment';
     ...COST_CENTER_USE_CASES,
     ...GROUP_USE_CASES,
     ...PROJECT_USE_CASES,
+    ...EXPENSES_USE_CASES,
   ],
 })
 export class UseCasesModule {}

@@ -1,2 +1,7 @@
 export * from './auth.controller';
+export * from './cost-center.controller';
+export * from './expense.controller';
+export * from './expense-category.controller';
+export * from './group.controller';
+export * from './project.controller';
 export * from './user.controller';

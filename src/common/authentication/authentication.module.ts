@@ -7,10 +7,10 @@ import {
 import { AuthenticationService } from './authentication.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { EnviromentModule, EnviromentService } from '@common/enviroment';
-import { ContextModule } from '@common/context/context.module';
-import { AuthenticationMiddleware } from './authentication.middleware';
+import { AuthenticationMiddleware } from './middlewares/authentication.middleware';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthenticationGuard } from './authentication.guard';
+import { AuthorizationGuard } from './guards';
+
 
 @Module({
   imports: [
@@ -25,7 +25,6 @@ import { AuthenticationGuard } from './authentication.guard';
       inject: [EnviromentService],
     }),
     EnviromentModule,
-    ContextModule,
   ],
   providers: [
     {
@@ -41,7 +40,7 @@ import { AuthenticationGuard } from './authentication.guard';
     },
     {
       provide: APP_GUARD,
-      useClass: AuthenticationGuard,
+      useClass: AuthorizationGuard,
     },
   ],
   exports: [AuthenticationService],

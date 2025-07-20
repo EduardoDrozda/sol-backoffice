@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { LoggerService } from './logger.service';
-import { ContextModule } from '@common/context';
+import { AuthenticationModule } from '../authentication';
 
 @Module({
-  imports: [ContextModule],
+  imports: [AuthenticationModule],
   providers: [LoggerService],
   exports: [LoggerService],
 })

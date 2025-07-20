@@ -51,7 +51,7 @@ export class CreateAuthUseCase
       id: existingUser.id,
       name: existingUser.name,
       companyId: existingUser.companyId,
-      role: existingUser.role?.name,
+      roleId: existingUser.roleId,
     });
 
     return {

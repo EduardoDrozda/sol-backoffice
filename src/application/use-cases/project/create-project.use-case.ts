@@ -12,7 +12,7 @@ import {
   PROJECT_REPOSITORY,
   IProjectRepository,
 } from '@domain/interfaces/repositories';
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 
 @Injectable()
 export class CreateProjectUseCase
@@ -22,7 +22,7 @@ export class CreateProjectUseCase
     @Inject(PROJECT_REPOSITORY)
     private readonly projectRepository: IProjectRepository,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   async execute(
@@ -45,7 +45,8 @@ export class CreateProjectUseCase
       );
     }
 
-    const user = this.contextService.getUser();
+    const session = this.authenticationService.getSession();
+    const user = session?.user;
 
     return this.projectRepository.create({
       name: data.name,

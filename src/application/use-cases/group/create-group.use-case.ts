@@ -7,7 +7,7 @@ import {
 import { LoggerService } from '@common/logger';
 import { CreateGroupRequestDto } from '@application/dtos/group/request';
 import { GetGroupResponseDto } from '@application/dtos/group/response';
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 
 @Injectable()
 export class CreateGroupUseCase
@@ -17,7 +17,7 @@ export class CreateGroupUseCase
     @Inject(GROUP_REPOSITORY)
     private readonly groupRepository: IGroupRepository,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   async execute(data: CreateGroupRequestDto): Promise<GetGroupResponseDto> {
@@ -32,14 +32,15 @@ export class CreateGroupUseCase
       );
     }
 
-    const companyId = this.contextService.getUser()?.companyId;
+    const session = this.authenticationService.getSession();
+    const user = session?.user;
 
     return await this.groupRepository.create({
       name: data.name,
       description: data.description ?? null,
       company: {
         connect: {
-          id: companyId,
+          id: user!.companyId,
         },
       },
     });

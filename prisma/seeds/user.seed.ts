@@ -1,5 +1,5 @@
 import { HashService } from "../../src/common/hash/hash.service";
-import { RolesEnum } from "../../src/domain/enums/roles.enum";
+import { AuthorizationRolesEnum } from "../../src/common/authentication/enums";
 import { Prisma, PrismaClient } from "@prisma/client";
 
 export async function userSeed() {
@@ -22,7 +22,7 @@ export async function userSeed() {
 
   const role = await prisma.role.findFirst({
     where: {
-      name: RolesEnum.ADMIN,
+      name: AuthorizationRolesEnum.ADMIN,
       companyId: company.id,
     }
   });

@@ -20,9 +20,8 @@ import {
   GetByIdExpenseCategoryUseCase,
   UpdateExpenseCategoryUseCase,
 } from '@application/use-cases/expense-category';
-import { Roles } from '@infrastructure/decorators/role';
-import { PermissionsEnum, RolesEnum } from '@domain/enums';
-import { Permission } from '@infrastructure/decorators/permission';
+import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
+import { Authorization } from '@common/authentication';
 
 @Controller('expense-categories')
 export class ExpenseCategoryController {
@@ -35,7 +34,7 @@ export class ExpenseCategoryController {
   ) {}
 
   @Post()
-  @Permission(PermissionsEnum.CREATE_EXPENSE_CATEGORIES)
+  @Authorization(AuthorizationPermissionsEnum.CREATE_EXPENSE_CATEGORIES)
   async create(
     @Body() createExpenseCategoryDto: CreateExpenseCategoryRequestDto,
   ) {
@@ -43,19 +42,19 @@ export class ExpenseCategoryController {
   }
 
   @Get()
-  @Permission(PermissionsEnum.VIEW_EXPENSE_CATEGORIES)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_EXPENSE_CATEGORIES)
   async findAll(@Query() searchParams: GetPaginationBaseDto) {
     return this.getAllExpenseCategoryUseCase.execute(searchParams);
   }
 
   @Get(':id')
-  @Permission(PermissionsEnum.VIEW_EXPENSE_CATEGORIES_BY_ID)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_EXPENSE_CATEGORIES_BY_ID)
   async findById(@Param('id') id: string) {
     return this.getExpenseCategoryByIdUseCase.execute(id);
   }
 
   @Patch(':id')
-  @Permission(PermissionsEnum.UPDATE_EXPENSE_CATEGORIES)
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_EXPENSE_CATEGORIES)
   async update(
     @Body() data: UpdateExpenseCategoryRequestDto,
     @Param('id') id: string,
@@ -67,7 +66,7 @@ export class ExpenseCategoryController {
   }
 
   @Delete(':id')
-  @Permission(PermissionsEnum.DELETE_EXPENSE_CATEGORIES)
+  @Authorization(AuthorizationPermissionsEnum.DELETE_EXPENSE_CATEGORIES)
   async delete(@Param('id') id: string) {
     return this.deleteByIdExpenseCategoryUseCase.execute(id);
   }

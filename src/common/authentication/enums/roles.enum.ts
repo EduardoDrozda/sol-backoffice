@@ -1,11 +1,11 @@
-export const RolesEnum = {
+export const AuthorizationRolesEnum = {
   ADMIN: 'admin',
   USER: 'user',
 };
 
-export type Roles = (typeof RolesEnum)[keyof typeof RolesEnum];
+export type AuthorizationRoles = (typeof AuthorizationRolesEnum)[keyof typeof AuthorizationRolesEnum];
 
-export const PermissionsEnum = {
+export const AuthorizationPermissionsEnum = {
   VIEW_USERS: 'view_users',
   VIEW_USERS_BY_ID: 'view_users_by_id',
   CREATE_USERS: 'create_users',
@@ -47,6 +47,13 @@ export const PermissionsEnum = {
   DELETE_PROJECTS: 'delete_projects',
   VIEW_PROJECTS: 'view_projects',
   VIEW_PROJECTS_BY_ID: 'view_projects_by_id',
+
+  GET_EXPENSES: 'get_expenses',
+  CREATE_EXPENSES: 'create_expenses',
+  UPDATE_EXPENSES: 'update_expenses',
+  DELETE_EXPENSES: 'delete_expenses',
+  VIEW_ALL_EXPENSES: 'view_expenses',
+  VIEW_EXPENSES_BY_ID: 'view_expenses_by_id',
 };
 
-export type Permissions = (typeof PermissionsEnum)[keyof typeof PermissionsEnum];
+export type AuthorizationPermissions = (typeof AuthorizationPermissionsEnum)[keyof typeof AuthorizationPermissionsEnum];

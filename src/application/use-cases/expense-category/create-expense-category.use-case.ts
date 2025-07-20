@@ -7,7 +7,7 @@ import {
   IExpenseCategoryRepository,
 } from '@domain/interfaces/repositories';
 import { LoggerService } from '@common/logger';
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 
 @Injectable()
 export class CreateExpenseCategoryUseCase
@@ -18,7 +18,7 @@ export class CreateExpenseCategoryUseCase
     @Inject(EXPENSE_CATEGORY_REPOSITORY)
     private readonly categoryExpenseRepository: IExpenseCategoryRepository,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
   ) {
     this.loggerService.context = this.constructor.name;
   }
@@ -30,7 +30,8 @@ export class CreateExpenseCategoryUseCase
       `Creating expense category with data: ${JSON.stringify(data)}`,
     );
 
-    const companyId = this.contextService.getUser()?.companyId;
+    const session = this.authenticationService.getSession();
+    const user = session?.user;
 
     const existingCategory = await this.categoryExpenseRepository.findByName(
       data.name,
@@ -38,7 +39,7 @@ export class CreateExpenseCategoryUseCase
 
     if (existingCategory) {
       this.loggerService.warn(
-        `Expense category with name "${data.name}" already exists for company ID ${companyId}`,
+        `Expense category with name "${data.name}" already exists for company ID ${user!.companyId}`,
       );
       throw new ConflictException(
         `Expense category with name "${data.name}" already exists.`,
@@ -52,7 +53,7 @@ export class CreateExpenseCategoryUseCase
       color: data.color,
       company: {
         connect: {
-          id: companyId,
+          id: user!.companyId,
         },
       },
     });

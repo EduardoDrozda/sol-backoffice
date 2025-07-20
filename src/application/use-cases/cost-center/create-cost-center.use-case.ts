@@ -13,7 +13,8 @@ import {
   COST_CENTER_REPOSITORY,
   ICostCenterRepository,
 } from '@domain/interfaces/repositories';
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
+
 
 @Injectable()
 export class CreateCostCenterUseCase
@@ -23,7 +24,7 @@ export class CreateCostCenterUseCase
     @Inject(COST_CENTER_REPOSITORY)
     private readonly costCenterRepository: ICostCenterRepository,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   async execute(
@@ -46,7 +47,8 @@ export class CreateCostCenterUseCase
       );
     }
 
-    const user = this.contextService.getUser();
+      const session = this.authenticationService.getSession();
+      const user = session?.user;
 
     return this.costCenterRepository.create({
       name: data.name,

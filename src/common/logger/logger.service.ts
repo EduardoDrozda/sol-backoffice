@@ -1,11 +1,11 @@
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class LoggerService {
   private readonly logger: ConsoleLogger;
 
-  constructor(private readonly contextService: ContextService) {
+  constructor(private readonly authenticationService: AuthenticationService) {
     this.logger = new ConsoleLogger({
       json: true,
       timestamp: true,
@@ -38,7 +38,8 @@ export class LoggerService {
   }
 
   private buildMessage(message: string): string {
-    const user = this.contextService.getUser();
+    const session = this.authenticationService.getSession();
+    const user = session?.user;
 
     if (user) {
       return `[${user.companyId}]: ${message}`;

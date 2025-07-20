@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 
 const auditPrisma = new PrismaClient();
 
-export function withAuditLog(contextService: ContextService) {
+export function withAuditLog(authenticationService: AuthenticationService) {
   return Prisma.defineExtension({
     name: 'audit-log',
     query: {
@@ -18,7 +18,8 @@ export function withAuditLog(contextService: ContextService) {
             return query(opArgs);
           }
 
-          const user = contextService.getUser();
+          const session = authenticationService.getSession();
+          const user = session?.user;
           let oldValue: any = null;
           let newValue: any = null;
           let recordId: string = '';

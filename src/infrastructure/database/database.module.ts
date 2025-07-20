@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
-import { ContextModule } from '@common/context';
+import { AuthenticationModule } from '@common/authentication';
 
 @Module({
-  imports: [ContextModule],
+  imports: [AuthenticationModule],
   providers: [DatabaseService],
   exports: [DatabaseService],
 })

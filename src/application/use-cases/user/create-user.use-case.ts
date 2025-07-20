@@ -7,7 +7,7 @@ import {
 } from '@domain/interfaces/repositories';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '../IBase.use-case';
-import { ContextService } from '@common/context/context.service';
+import { AuthenticationService } from '@common/authentication';
 import { EnviromentService } from '@common/enviroment';
 import { QueueEmailProducer } from '@common/queue/email/producers';
 import { EmailTypeEnum, SendEmailOptions } from '@common/email';
@@ -22,7 +22,7 @@ export class CreateUserUseCase
     @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
     private readonly queueEmailProducer: QueueEmailProducer,
     private readonly enviromentService: EnviromentService,
   ) {
@@ -39,12 +39,14 @@ export class CreateUserUseCase
       throw new ConflictException('User already exists');
     }
 
-    const loggedUser = this.contextService.getUser();
+    const session = this.authenticationService.getSession();
+    const loggedUser = session?.user;
+
     const hashedPassword = await this.hashService.hash(data.password);
 
     const emailConfirmationToken = await this.hashService.hash(data.email);
 
-    const user = await this.userRepository.create({
+    const newUser = await this.userRepository.create({
       name: data.name,
       email: data.email,
       phone: data.phone,
@@ -62,10 +64,10 @@ export class CreateUserUseCase
       password: hashedPassword,
     });
 
-    this.loggerService.log(`User created with id: ${user.id}`);
+    this.loggerService.log(`User created with id: ${newUser.id}`);
 
-    await this.sendWelcomeEmailToQueue(user, emailConfirmationToken);
-    this.loggerService.log(`Email confirmation job sent to queue: ${user.email}`);
+    await this.sendWelcomeEmailToQueue(newUser, emailConfirmationToken);
+    this.loggerService.log(`Email confirmation job sent to queue: ${newUser.email}`);
   }
 
   private async sendWelcomeEmailToQueue(user: UserModel, emailConfirmationToken: string) {

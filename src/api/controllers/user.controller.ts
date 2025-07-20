@@ -1,8 +1,8 @@
 import { ConfirmUserDTO, CreateUserRequestDTO, ForgotPasswordDTO, ResetPasswordDTO } from '@application/dtos/user/requests';
 import { ConfirmUserUseCase, CreateUserUseCase, ForgotPasswordUseCase, ResetPasswordUseCase } from '@application/use-cases/user';
 import { IsPublic } from '@common/authentication';
-import { PermissionsEnum, RolesEnum } from '@domain/enums';
-import { Permission } from '@infrastructure/decorators/permission';
+import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
+import { Authorization } from '@common/authentication';
 import { Body, Controller, Patch, Post } from '@nestjs/common';
 
 @Controller('users')
@@ -15,7 +15,7 @@ export class UserController {
   ) {}
 
   @Post()
-  @Permission(PermissionsEnum.CREATE_USERS)
+  @Authorization(AuthorizationPermissionsEnum.CREATE_USERS)
   async createUser(@Body() createUserRequestDTO: CreateUserRequestDTO) {
     return this.createUserUseCase.execute(createUserRequestDTO);
   }

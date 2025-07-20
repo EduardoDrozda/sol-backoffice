@@ -4,3 +4,4 @@ export * from './group-model';
 export * from './project.model';
 export * from './role.model';
 export * from './user.model';
+export * from './expense-model';

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { PermissionsEnum, RolesEnum } from '@domain/enums';
+import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { CreateCostCenterRequestDto, UpdateCostCenterRequestDto } from '@application/dtos/cost-center/request';
 import {
   CreateCostCenterUseCase,
@@ -9,7 +9,7 @@ import {
   UpdateCostCenterUseCase,
 } from '@application/use-cases/cost-center';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
-import { Permission } from '@infrastructure/decorators/permission';
+import { Authorization } from '@common/authentication';
 
 @Controller('cost-centers')
 export class CostCenterController {
@@ -22,7 +22,7 @@ export class CostCenterController {
   ) {}
 
   @Post()
-  @Permission(PermissionsEnum.CREATE_COST_CENTERS)
+  @Authorization(AuthorizationPermissionsEnum.CREATE_COST_CENTERS)
   async createCostCenter(
     @Body() createCostCenterDto: CreateCostCenterRequestDto,
   ) {
@@ -30,19 +30,19 @@ export class CostCenterController {
   }
 
   @Get()
-  @Permission(PermissionsEnum.VIEW_COST_CENTERS)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_COST_CENTERS)
   async getCostCenters(@Query() query: GetPaginationBaseDto) {
     return this.getAllCostCenterUseCase.execute(query);
   }
 
   @Get(':id')
-  @Permission(PermissionsEnum.VIEW_COST_CENTERS_BY_ID)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_COST_CENTERS_BY_ID)
   async getCostCenterById(@Param('id') id: string) {
     return this.getCostCenterByIdUseCase.execute(id);
   }
 
   @Put(':id')
-  @Permission(PermissionsEnum.UPDATE_COST_CENTERS)
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_COST_CENTERS)
   async updateCostCenter(@Param('id') id: string, @Body() updateCostCenterDto: UpdateCostCenterRequestDto) {
     return this.updateCostCenterUseCase.execute({
       ...updateCostCenterDto,
@@ -51,7 +51,7 @@ export class CostCenterController {
   }
 
   @Delete(':id')
-  @Permission(PermissionsEnum.DELETE_COST_CENTERS)
+  @Authorization(AuthorizationPermissionsEnum.DELETE_COST_CENTERS)
   async deleteCostCenter(@Param('id') id: string) {
     return this.deleteCostCenterUseCase.execute(id);
   }

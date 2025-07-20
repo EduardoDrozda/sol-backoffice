@@ -1,7 +1,7 @@
-import { PermissionsEnum, RolesEnum } from "../../src/domain/enums";
+import { AuthorizationPermissionsEnum, AuthorizationRolesEnum } from "../../src/common/authentication/enums";
 import { Prisma, PrismaClient } from "@prisma/client";
 
-export async function rolesSeed() {
+export async function rolesSeed() { 
   const prisma = new PrismaClient();
   const hasData = await prisma.role.findFirst();
 
@@ -17,7 +17,7 @@ export async function rolesSeed() {
     return;
   }
 
-  const roles: Prisma.RoleCreateManyInput[] = Object.values(RolesEnum).map(role => ({
+  const roles: Prisma.RoleCreateManyInput[] = Object.values(AuthorizationRolesEnum).map(role => ({
     name: role,
     description: `Role for ${role}`,
     companyId: company.id,
@@ -27,7 +27,7 @@ export async function rolesSeed() {
 
   console.log(`Created ${createdRoles.count} roles`);
 
-  const permissions: Prisma.PermissionCreateManyInput[] = Object.values(PermissionsEnum).map(permission => ({
+  const permissions: Prisma.PermissionCreateManyInput[] = Object.values(AuthorizationPermissionsEnum).map(permission => ({
     name: permission,
     description: `Permission for ${permission}`,
     companyId: company.id,
@@ -40,7 +40,7 @@ export async function rolesSeed() {
   const findedRole = await prisma.role.findFirst({
     where: {
       name: {
-        equals: RolesEnum.ADMIN,
+        equals: AuthorizationRolesEnum.ADMIN,
       }
     },
   });

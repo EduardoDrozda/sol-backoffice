@@ -1,18 +1,12 @@
-import {
-  Injectable,
-  NestMiddleware,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
-import { NextFunction, Request } from 'express';
-import { ContextService } from '@common/context/context.service';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { AuthenticationService } from '../authentication.service';
 import { EnviromentService } from '@common/enviroment';
+import { NextFunction, Request } from 'express';
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
   constructor(
-    private readonly jwtService: AuthenticationService,
-    private readonly contextService: ContextService,
+    private readonly authenticationService: AuthenticationService,
     private readonly enviroment: EnviromentService,
   ) {}
 
@@ -25,14 +19,16 @@ export class AuthenticationMiddleware implements NestMiddleware {
     }
 
     try {
-      const payload = await this.jwtService.verify(token);
+      const payload = await this.authenticationService.verify(token);
       req.user = payload as { id: string; role: string; companyId: string };
 
-      this.contextService.run(
+      this.authenticationService.run(
         {
-          companyId: payload.companyId,
-          id: payload.id,
-          role: payload.role,
+          user: {
+            companyId: payload.companyId,
+            id: payload.id,
+            roleId: payload.roleId,
+          },
         },
         () => next(),
       );

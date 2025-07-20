@@ -1,6 +1,7 @@
 import {
   COST_CENTER_REPOSITORY,
   EXPENSE_CATEGORY_REPOSITORY,
+  EXPENSE_REPOSITORY,
   GROUP_REPOSITORY,
   PROJECT_REPOSITORY,
   ROLE_REPOSITORY,
@@ -14,6 +15,7 @@ import { CostCenterRepository } from './cost-center.repository';
 import { GroupRepository } from './group.repository';
 import { ProjectRepository } from './project.repository';
 import { RoleRepository } from './role.repository';
+import { ExpenseRepository } from './expense.repository';
 
 @Global()
 @Module({
@@ -43,6 +45,10 @@ import { RoleRepository } from './role.repository';
       provide: PROJECT_REPOSITORY,
       useClass: ProjectRepository,
     },
+    {
+      provide: EXPENSE_REPOSITORY,
+      useClass: ExpenseRepository,
+    },
   ],
   exports: [
     USER_REPOSITORY,
@@ -51,6 +57,7 @@ import { RoleRepository } from './role.repository';
     GROUP_REPOSITORY,
     PROJECT_REPOSITORY,
     ROLE_REPOSITORY,
+    EXPENSE_REPOSITORY,
   ],
 })
 export class RepositoriesModule {}

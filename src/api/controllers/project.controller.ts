@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
-import { PermissionsEnum } from '@domain/enums';
+import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { CreateProjectRequestDto, UpdateProjectRequestDto } from '@application/dtos/project/request';
 import {
   CreateProjectUseCase,
@@ -9,7 +9,7 @@ import {
   UpdateProjectUseCase,
 } from '@application/use-cases/project';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
-import { Permission } from '@infrastructure/decorators/permission';
+import { Authorization } from '@common/authentication';
 
 @Controller('projects')
 export class ProjectController {
@@ -22,25 +22,25 @@ export class ProjectController {
   ) {}
 
   @Post()
-  @Permission(PermissionsEnum.CREATE_PROJECTS)
+  @Authorization(AuthorizationPermissionsEnum.CREATE_PROJECTS)
   async createProject(@Body() createProjectDto: CreateProjectRequestDto) {
     return this.createProjectUseCase.execute(createProjectDto);
   }
 
   @Get()
-  @Permission(PermissionsEnum.VIEW_PROJECTS)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_PROJECTS)
   async getAllProjects(@Query() query: GetPaginationBaseDto) {
     return this.getAllProjectUseCase.execute(query);
   }
 
   @Get(':id')
-  @Permission(PermissionsEnum.VIEW_PROJECTS_BY_ID)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_PROJECTS_BY_ID)
   async getProjectById(@Param('id') id: string) {
     return this.getProjectByIdUseCase.execute(id);
   }
 
   @Patch(':id')
-  @Permission(PermissionsEnum.UPDATE_PROJECTS)
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_PROJECTS)
   async updateProject(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectRequestDto) {
     return this.updateProjectUseCase.execute({
       ...updateProjectDto,
@@ -49,7 +49,7 @@ export class ProjectController {
   }
 
   @Delete(':id')
-  @Permission(PermissionsEnum.DELETE_PROJECTS)
+  @Authorization(AuthorizationPermissionsEnum.DELETE_PROJECTS)
   async deleteProject(@Param('id') id: string) {
     return this.deleteProjectUseCase.execute(id);
   }

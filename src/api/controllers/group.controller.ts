@@ -15,9 +15,9 @@ import { GetAllGroupUseCase } from '@application/use-cases/group/get-all-group.u
 import { GetGroupByIdUseCase } from '@application/use-cases/group/get-group-by-id.use-case';
 import { UpdateGroupUseCase } from '@application/use-cases/group/update-group.use-case';
 import { DeleteGroupUseCase } from '@application/use-cases/group/delete-group.use-case';
-import { PermissionsEnum } from '@domain/enums';
+import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
-import { Permission } from '@infrastructure/decorators/permission';
+import { Authorization } from '@common/authentication';
 
 @Controller('groups')
 export class GroupController {
@@ -30,25 +30,25 @@ export class GroupController {
   ) {}
 
   @Post()
-  @Permission(PermissionsEnum.CREATE_GROUPS)
+  @Authorization(AuthorizationPermissionsEnum.CREATE_GROUPS)
   async createGroup(@Body() createGroupDto: CreateGroupRequestDto) {
     return this.createGroupUseCase.execute(createGroupDto);
   }
 
   @Get()
-  @Permission(PermissionsEnum.VIEW_GROUPS)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_GROUPS)
   async findAll(@Query() query: GetPaginationBaseDto) {
     return this.getAllGroupUseCase.execute(query);
   }
 
   @Get(':id')
-  @Permission(PermissionsEnum.VIEW_GROUPS_BY_ID)
+  @Authorization(AuthorizationPermissionsEnum.VIEW_GROUPS_BY_ID)
   async findById(@Param('id') id: string) {
     return this.getGroupByIdUseCase.execute(id);
   }
 
   @Patch(':id')
-  @Permission(PermissionsEnum.UPDATE_GROUPS)
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_GROUPS)
   async updateGroup(
     @Param('id') id: string,
     @Body() updateGroupDto: UpdateGroupRequestDto,
@@ -60,7 +60,7 @@ export class GroupController {
   }
 
   @Delete(':id')
-  @Permission(PermissionsEnum.DELETE_GROUPS)
+  @Authorization(AuthorizationPermissionsEnum.DELETE_GROUPS)
   async deleteGroup(@Param('id') id: string) {
     return this.deleteGroupUseCase.execute(id);
   }

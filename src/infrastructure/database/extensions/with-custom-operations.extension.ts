@@ -1,10 +1,9 @@
-import { ContextService } from '@common/context';
+import { AuthenticationService } from '@common/authentication';
 import { ForbiddenOperationException } from '@domain/exceptions';
-import { ForbiddenException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 
-export const withCustomOperations = (contextService: ContextService) => {
+export const withCustomOperations = (authenticationService: AuthenticationService) => {
   return Prisma.defineExtension((prisma) => {
     return prisma.$extends({
       name: 'custom-operations',
@@ -13,7 +12,10 @@ export const withCustomOperations = (contextService: ContextService) => {
           async findMany({ model, args, query }) {
             if (model === 'AuditLog') return query(args);
 
-            const companyId = contextService.getUser()?.companyId;
+            const session = authenticationService.getSession();
+            const user = session?.user;
+            const companyId = user?.companyId;
+            
             args.where = {
               ...args.where,
               companyId,
@@ -25,7 +27,10 @@ export const withCustomOperations = (contextService: ContextService) => {
           async findFirst({ model, args, query }) {
             if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
-            const companyId = contextService.getUser()?.companyId;
+            const session = authenticationService.getSession();
+            const user = session?.user;
+            const companyId = user?.companyId;
+
             args.where = {
               ...args.where,
               companyId,
@@ -37,7 +42,10 @@ export const withCustomOperations = (contextService: ContextService) => {
           async findUnique({ model, args, query }) {
             if (model === 'AuditLog') return query(args);
 
-            const companyId = contextService.getUser()?.companyId;
+            const session = authenticationService.getSession();
+            const user = session?.user;
+            const companyId = user?.companyId;
+            
             args.where = {
               ...args.where,
               companyId,
@@ -49,7 +57,8 @@ export const withCustomOperations = (contextService: ContextService) => {
           async update({ model, args, query }) {
             if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
-            const user = contextService.getUser();
+            const session = authenticationService.getSession();
+            const user = session?.user;
 
             args.where = {
               ...args.where,
@@ -69,7 +78,8 @@ export const withCustomOperations = (contextService: ContextService) => {
           async updateMany({ model, args, query }) {
             if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
-            const user = contextService.getUser();
+            const session = authenticationService.getSession();
+            const user = session?.user;
 
             args.where = {
               ...args.where,
@@ -88,14 +98,18 @@ export const withCustomOperations = (contextService: ContextService) => {
           },
           async create({ model, args, query }) {
             if (model === 'AuditLog' || model === 'UserToken') return query(args);
-            const user = contextService.getUser();
+            const session = authenticationService.getSession();
+            const user = session?.user;
+
             (args.data as any).createdById = user?.id;
             return query(args);
           },
           async count({ model, args, query }) {
             if (model === 'AuditLog' || model === 'UserToken') return query(args);
 
-            const user = contextService.getUser();
+            const session = authenticationService.getSession();
+            const user = session?.user;
+
             args.where = {
               ...args.where,
               companyId: user?.companyId,
