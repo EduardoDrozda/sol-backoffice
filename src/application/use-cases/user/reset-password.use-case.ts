@@ -20,27 +20,42 @@ export class ResetPasswordUseCase implements IBaseUseCase<ResetPasswordDTO, void
   async execute(data: ResetPasswordDTO): Promise<void> {
     this.loggerService.log(`Resetting password with token: ${data.token}`);
 
-    const userToken = await this.userRepository.findByUserToken(data.token);
+    const userToken = await this.getAndValidateUserToken(data.token);
+    const user = await this.getUserOrThrow(userToken.userId);
+    const hashedPassword = await this.hashPassword(data.password);
+    await this.updateUserPassword(user.id, hashedPassword);
+    await this.deleteUserToken(data.token);
+    this.loggerService.log(`Password reset successfully for user: ${user.id}`);
+  }
 
+  private async getAndValidateUserToken(token: string) {
+    const userToken = await this.userRepository.findByUserToken(token);
     if (!userToken || userToken.type !== TokenTypeEnum.FORGOT_PASSWORD) {
       throw new BadRequestException('Invalid token type');
     }
-
     if (userToken.expiresAt && userToken.expiresAt < new Date()) {
       throw new BadRequestException('Token has expired');
     }
+    return userToken;
+  }
 
-    const user = await this.userRepository.findById(userToken.userId);
-
+  private async getUserOrThrow(userId: string) {
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
 
-    const hashedPassword = await this.hashService.hash(data.password);
+  private async hashPassword(password: string): Promise<string> {
+    return this.hashService.hash(password);
+  }
 
-    await this.userRepository.updatePassword(user.id, hashedPassword);
-    await this.userRepository.deleteUserToken(data.token);
+  private async updateUserPassword(userId: string, hashedPassword: string): Promise<void> {
+    await this.userRepository.updatePassword(userId, hashedPassword);
+  }
 
-    this.loggerService.log(`Password reset successfully for user: ${user.id}`);
+  private async deleteUserToken(token: string): Promise<void> {
+    await this.userRepository.deleteUserToken(token);
   }
 } 

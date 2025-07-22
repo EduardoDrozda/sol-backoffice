@@ -29,9 +29,15 @@ export class GetAllProjectUseCase
   ): Promise<BaseResponseWithPaginationDto<GetProjectResponseDto>> {
     const { page, limit, search } = data;
     this.loggerService.log(`Fetching all projects`);
+    const projects = await this.getAllProjects(search);
+    return this.paginateProjects(projects, page, limit);
+  }
 
-    const projects = await this.projectRepository.findAll(search);
+  private async getAllProjects(search?: string) {
+    return this.projectRepository.findAll(search);
+  }
 
+  private paginateProjects(projects: any[], page: number, limit: number) {
     return PaginationHelper.paginate<GetProjectResponseDto>(
       projects,
       page,

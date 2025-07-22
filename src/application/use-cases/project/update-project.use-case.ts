@@ -22,25 +22,31 @@ export class UpdateProjectUseCase
     data: UpdateProjectRequestDto,
   ): Promise<GetProjectResponseDto> {
     this.logger.log(`Updating project: ${data.id}`);
+    const project = await this.getProjectOrThrow(data.id);
+    const updatedProject = await this.updateProject(data.id, data);
+    return this.mapToGetProjectResponseDto(updatedProject);
+  }
 
-    const project = await this.projectRepository.findById(data.id);
-
+  private async getProjectOrThrow(id: string) {
+    const project = await this.projectRepository.findById(id);
     if (!project) {
       throw new NotFoundException('Project not found');
     }
+    return project;
+  }
 
-    const updatedProject = await this.projectRepository.update(
-      data.id,
-      data,
-    );
+  private async updateProject(id: string, data: UpdateProjectRequestDto) {
+    return this.projectRepository.update(id, data);
+  }
 
+  private mapToGetProjectResponseDto(project: any): GetProjectResponseDto {
     return {
-      id: updatedProject.id,
-      name: updatedProject.name,
-      description: updatedProject.description,
-      companyId: updatedProject.companyId,
-      createdAt: updatedProject.createdAt,
-      updatedAt: updatedProject.updatedAt,
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      companyId: project.companyId,
+      createdAt: project.createdAt,
+      updatedAt: project.updatedAt,
     };
   }
 } 

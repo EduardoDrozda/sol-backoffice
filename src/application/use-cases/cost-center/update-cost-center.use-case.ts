@@ -22,24 +22,30 @@ export class UpdateCostCenterUseCase
     data: UpdateCostCenterRequestDto,
   ): Promise<GetCostCenterResponseDto> {
     this.logger.log(`Updating cost center: ${data.id}`);
+    const costCenter = await this.getCostCenterOrThrow(data.id);
+    const updatedCostCenter = await this.updateCostCenter(data.id, data);
+    return this.mapToGetCostCenterResponseDto(updatedCostCenter);
+  }
 
-    const costCenter = await this.costCenterRepository.findById(data.id);
-
+  private async getCostCenterOrThrow(id: string) {
+    const costCenter = await this.costCenterRepository.findById(id);
     if (!costCenter) {
       throw new NotFoundException('Cost center not found');
     }
+    return costCenter;
+  }
 
-    const updatedCostCenter = await this.costCenterRepository.update(
-      data.id,
-      data,
-    );
+  private async updateCostCenter(id: string, data: UpdateCostCenterRequestDto) {
+    return this.costCenterRepository.update(id, data);
+  }
 
+  private mapToGetCostCenterResponseDto(costCenter: any): GetCostCenterResponseDto {
     return {
-      id: updatedCostCenter.id,
-      name: updatedCostCenter.name,
-      description: updatedCostCenter.description,
-      createdAt: updatedCostCenter.createdAt,
-      updatedAt: updatedCostCenter.updatedAt,
+      id: costCenter.id,
+      name: costCenter.name,
+      description: costCenter.description,
+      createdAt: costCenter.createdAt,
+      updatedAt: costCenter.updatedAt,
     };
   }
 }

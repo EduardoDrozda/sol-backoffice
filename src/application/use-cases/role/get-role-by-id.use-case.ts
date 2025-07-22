@@ -16,16 +16,21 @@ export class GetRoleByIdUseCase implements IBaseUseCase<string, GetRoleDTO> {
 
   async execute(id: string): Promise<GetRoleDTO> {
     this.loggerService.log(`Fetching role with id: ${id}`);
+    const role = await this.getRoleOrThrow(id);
+    this.loggerService.log(`Role found: ${role.name}`);
+    return this.mapToGetRoleDTO(role);
+  }
 
+  private async getRoleOrThrow(id: string): Promise<RoleWithPermissions> {
     const role = await this.roleRepository.findById(id, true);
-
     if (!role) {
       this.loggerService.warn(`Role with id ${id} not found`);
       throw new NotFoundException('Role not found');
     }
+    return role as RoleWithPermissions;
+  }
 
-    this.loggerService.log(`Role found: ${role.name}`);
-
+  private mapToGetRoleDTO(role: RoleWithPermissions): GetRoleDTO {
     return {
       id: role.id,
       name: role.name,
@@ -37,11 +42,11 @@ export class GetRoleByIdUseCase implements IBaseUseCase<string, GetRoleDTO> {
       updatedById: role.updatedById || '',
       deletedAt: role.deletedAt || new Date(),
       deletedById: role.deletedById || '',
-      permissions: (role as RoleWithPermissions).permissions?.map(permission => ({
+      permissions: (role.permissions?.map(permission => ({
         id: permission.permission.id,
         name: permission.permission.name,
         description: permission.permission.description,
-      })),
+      }))) || [],
     };
   }
 } 

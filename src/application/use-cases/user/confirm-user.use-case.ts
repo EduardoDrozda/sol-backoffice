@@ -16,24 +16,40 @@ export class ConfirmUserUseCase implements IBaseUseCase<ConfirmUserDTO, void> {
 
   async execute(data: ConfirmUserDTO): Promise<void> {
     this.loggerService.log(`Confirming user with token: ${data.token}`);
+    const userToken = await this.getAndValidateUserToken(data.token);
+    const user = await this.getUserOrThrow(userToken.userId);
+    this.ensureUserNotAlreadyConfirmed(user);
+    await this.activateUser(user.id);
+    await this.deleteUserToken(data.token);
+  }
 
-    const userToken = await this.userRepository.findByUserToken(data.token);
-
+  private async getAndValidateUserToken(token: string) {
+    const userToken = await this.userRepository.findByUserToken(token);
     if (!userToken || userToken.type !== TokenTypeEnum.EMAIL_CONFIRMATION) {
       throw new BadRequestException('Invalid token');
     }
+    return userToken;
+  }
 
-    const user = await this.userRepository.findById(userToken.userId);
-
+  private async getUserOrThrow(userId: string) {
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
 
+  private ensureUserNotAlreadyConfirmed(user: any): void {
     if (user.isActive) {
       throw new BadRequestException('User already confirmed');
     }
+  }
 
-    await this.userRepository.activateUser(user.id);
-    await this.userRepository.deleteUserToken(data.token);
+  private async activateUser(userId: string): Promise<void> {
+    await this.userRepository.activateUser(userId);
+  }
+
+  private async deleteUserToken(token: string): Promise<void> {
+    await this.userRepository.deleteUserToken(token);
   }
 }

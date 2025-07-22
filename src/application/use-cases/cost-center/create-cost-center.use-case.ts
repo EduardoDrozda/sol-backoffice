@@ -33,23 +33,29 @@ export class CreateCostCenterUseCase
     this.loggerService.log(
       `Creating cost center with data: ${JSON.stringify(data)}`,
     );
+    await this.ensureCostCenterNameIsUnique(data.name);
+    const user = this.getLoggedUser();
+    return this.createCostCenter(data, user);
+  }
 
-    const existingCostCenter = await this.costCenterRepository.findByName(
-      data.name,
-    );
-
+  private async ensureCostCenterNameIsUnique(name: string): Promise<void> {
+    const existingCostCenter = await this.costCenterRepository.findByName(name);
     if (existingCostCenter) {
       this.loggerService.warn(
-        `Cost center with name "${data.name}" already exists`,
+        `Cost center with name "${name}" already exists`,
       );
       throw new ConflictException(
-        `Cost center with name "${data.name}" already exists.`,
+        `Cost center with name "${name}" already exists.`,
       );
     }
+  }
 
-      const session = this.authenticationService.getSession();
-      const user = session?.user;
+  private getLoggedUser() {
+    const session = this.authenticationService.getSession();
+    return session?.user;
+  }
 
+  private async createCostCenter(data: CreateCostCenterRequestDto, user: any) {
     return this.costCenterRepository.create({
       name: data.name,
       description: data.description,

@@ -19,13 +19,19 @@ export class GetGroupByIdUseCase
 
   async execute(id: string): Promise<GetGroupResponseDto> {
     this.logger.log(`Get group by id: ${id}`);
+    const group = await this.getGroupOrThrow(id);
+    return this.mapToGetGroupResponseDto(group);
+  }
 
+  private async getGroupOrThrow(id: string) {
     const group = await this.groupRepository.findById(id);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
+    return group;
+  }
 
+  private mapToGetGroupResponseDto(group: any): GetGroupResponseDto {
     return {
       id: group.id,
       name: group.name,

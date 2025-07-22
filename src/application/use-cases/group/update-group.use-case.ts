@@ -20,13 +20,19 @@ export class UpdateGroupUseCase
 
   async execute(data: UpdateGroupRequestDto): Promise<GetGroupResponseDto> {
     this.logger.log(`Updating group: ${data.id}`);
+    const group = await this.getGroupOrThrow(data.id);
+    return await this.updateGroup(data.id, data);
+  }
 
-    const group = await this.groupRepository.findById(data.id);
-
+  private async getGroupOrThrow(id: string) {
+    const group = await this.groupRepository.findById(id);
     if (!group) {
       throw new NotFoundException('Group not found');
     }
+    return group;
+  }
 
-    return await this.groupRepository.update(data.id, data);
+  private async updateGroup(id: string, data: UpdateGroupRequestDto) {
+    return this.groupRepository.update(id, data);
   }
 }

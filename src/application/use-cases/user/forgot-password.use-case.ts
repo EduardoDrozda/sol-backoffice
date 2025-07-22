@@ -25,34 +25,40 @@ export class ForgotPasswordUseCase implements IBaseUseCase<ForgotPasswordDTO, vo
 
   async execute(data: ForgotPasswordDTO): Promise<void> {
     this.loggerService.log(`Forgot password for user with email: ${data.email}`);
+    const user = await this.getUserOrThrow(data.email);
+    const { token, expiresAt } = await this.createUserToken(user.id);
+    await this.sendForgotPasswordEmail(user, token, expiresAt);
+  }
 
-    const user = await this.userRepository.findByEmail(data.email);
-
+  private async getUserOrThrow(email: string) {
+    const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
 
+  private async createUserToken(userId: string) {
     const hours = 1;
     const expiresAt = DateHelper.addHours(new Date(), hours);
-
+    const token = await this.hashService.hash(`${userId}-${TokenTypeEnum.FORGOT_PASSWORD}`);
     const userToken = await this.userRepository.createUserToken({
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-      token: await this.hashService.hash(`${user.id}-${TokenTypeEnum.FORGOT_PASSWORD}`),
+      user: { connect: { id: userId } },
+      token,
       type: TokenTypeEnum.FORGOT_PASSWORD,
       expiresAt,
     });
+    return { token: userToken.token, expiresAt: hours };
+  }
 
+  private async sendForgotPasswordEmail(user: any, token: string, expiresAt: number) {
     await this.queueEmailProducer.sendEmail({
       to: user.email,
       type: EmailTypeEnum.FORGOT_PASSWORD,
       context: {
         userName: user.name,
-        resetUrl: `${this.enviromentService.get('FRONTEND_URL')}/reset-password?token=${userToken.token}`,
-        expiresAt: hours,
+        resetUrl: `${this.enviromentService.get('FRONTEND_URL')}/reset-password?token=${token}`,
+        expiresAt,
       },
     });
   }

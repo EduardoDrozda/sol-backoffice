@@ -31,23 +31,29 @@ export class CreateProjectUseCase
     this.loggerService.log(
       `Creating project with data: ${JSON.stringify(data)}`,
     );
+    await this.ensureProjectNameIsUnique(data.name);
+    const user = this.getLoggedUser();
+    return this.createProject(data, user);
+  }
 
-    const existingProject = await this.projectRepository.findByName(
-      data.name,
-    );
-
+  private async ensureProjectNameIsUnique(name: string): Promise<void> {
+    const existingProject = await this.projectRepository.findByName(name);
     if (existingProject) {
       this.loggerService.warn(
-        `Project with name "${data.name}" already exists`,
+        `Project with name "${name}" already exists`,
       );
       throw new ConflictException(
-        `Project with name "${data.name}" already exists.`,
+        `Project with name "${name}" already exists.`,
       );
     }
+  }
 
+  private getLoggedUser() {
     const session = this.authenticationService.getSession();
-    const user = session?.user;
+    return session?.user;
+  }
 
+  private async createProject(data: CreateProjectRequestDto, user: any) {
     return this.projectRepository.create({
       name: data.name,
       description: data.description,

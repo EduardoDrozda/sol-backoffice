@@ -18,20 +18,16 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
 
   async execute(data: CreateRoleRequestDTO): Promise<GetRoleDTO> {
     this.loggerService.log(`Creating role with data: ${JSON.stringify(data)}`);
-
-    await this.validateRoleName(data.name);
-    const permissionIds = await this.validateAndExtractPermissionIds(data.permissions);
+    await this.ensureRoleNameIsUnique(data.name);
+    const permissionIds = await this.getValidPermissionIds(data.permissions);
     const createData = this.buildCreateData(data, permissionIds);
-    const { id: newRoleId } = await this.roleRepository.create(createData);
-
+    const { id: newRoleId } = await this.createRole(createData);
     this.loggerService.log(`Role created with id: ${newRoleId}`);
-
-    const newRole = await this.roleRepository.findById(newRoleId, true) as RoleWithPermissions;
-    
+    const newRole = await this.getRoleByIdWithPermissions(newRoleId);
     return this.mapToGetRoleDTO(newRole);
   }
 
-  private async validateRoleName(name: string): Promise<void> {
+  private async ensureRoleNameIsUnique(name: string): Promise<void> {
     const existingRole = await this.roleRepository.findByName(name);
     if (existingRole) {
       this.loggerService.warn(`Role with name ${name} already exists.`);
@@ -39,7 +35,7 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
     }
   }
 
-  private async validateAndExtractPermissionIds(permissions?: { id: string }[]): Promise<string[]> {
+  private async getValidPermissionIds(permissions?: { id: string }[]): Promise<string[]> {
     const permissionIds: string[] = [];
     if (permissions && permissions.length > 0) {
       for (const permission of permissions) {
@@ -58,7 +54,6 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
       name: data.name,
       description: data.description,
     };
-    
     if (permissionIds.length > 0) {
       createData.permissions = {
         create: permissionIds.map(permissionId => ({
@@ -69,6 +64,14 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
       };
     }
     return createData;
+  }
+
+  private async createRole(createData: any) {
+    return this.roleRepository.create(createData);
+  }
+
+  private async getRoleByIdWithPermissions(roleId: string): Promise<RoleWithPermissions> {
+    return this.roleRepository.findById(roleId, true) as Promise<RoleWithPermissions>;
   }
 
   private mapToGetRoleDTO(newRole: RoleWithPermissions): GetRoleDTO {

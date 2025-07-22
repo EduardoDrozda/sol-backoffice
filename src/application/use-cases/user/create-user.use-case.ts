@@ -32,21 +32,39 @@ export class CreateUserUseCase
   async execute(data: CreateUserRequestDTO): Promise<void> {
     this.loggerService.log(`Creating user with data: ${JSON.stringify(data)}`);
 
-    const findedUser = await this.userRepository.findByEmail(data.email);
+    await this.ensureUserDoesNotExist(data.email);
+    const loggedUser = this.getLoggedUser();
+    const hashedPassword = await this.hashPassword(data.password);
+    const emailConfirmationToken = await this.generateEmailConfirmationToken(data.email);
+    const newUser = await this.createUser(data, loggedUser, hashedPassword, emailConfirmationToken);
+    this.loggerService.log(`User created with id: ${newUser.id}`);
+    await this.sendWelcomeEmailToQueue(newUser, emailConfirmationToken);
+    this.loggerService.log(`Email confirmation job sent to queue: ${newUser.email}`);
+  }
 
+  private async ensureUserDoesNotExist(email: string): Promise<void> {
+    const findedUser = await this.userRepository.findByEmail(email);
     if (findedUser) {
-      this.loggerService.warn(`User with email ${data.email} already exists.`);
+      this.loggerService.warn(`User with email ${email} already exists.`);
       throw new ConflictException('User already exists');
     }
+  }
 
+  private getLoggedUser() {
     const session = this.authenticationService.getSession();
-    const loggedUser = session?.user;
+    return session?.user;
+  }
 
-    const hashedPassword = await this.hashService.hash(data.password);
+  private async hashPassword(password: string): Promise<string> {
+    return this.hashService.hash(password);
+  }
 
-    const emailConfirmationToken = await this.hashService.hash(data.email);
+  private async generateEmailConfirmationToken(email: string): Promise<string> {
+    return this.hashService.hash(email);
+  }
 
-    const newUser = await this.userRepository.create({
+  private async createUser(data: CreateUserRequestDTO, loggedUser: any, hashedPassword: string, emailConfirmationToken: string) {
+    return this.userRepository.create({
       name: data.name,
       email: data.email,
       phone: data.phone,
@@ -68,11 +86,6 @@ export class CreateUserUseCase
       },
       password: hashedPassword,
     });
-
-    this.loggerService.log(`User created with id: ${newUser.id}`);
-
-    await this.sendWelcomeEmailToQueue(newUser, emailConfirmationToken);
-    this.loggerService.log(`Email confirmation job sent to queue: ${newUser.email}`);
   }
 
   private async sendWelcomeEmailToQueue(user: UserModel, emailConfirmationToken: string) {

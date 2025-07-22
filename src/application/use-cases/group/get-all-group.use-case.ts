@@ -30,9 +30,15 @@ export class GetAllGroupUseCase
   ): Promise<BaseResponseWithPaginationDto<GetGroupResponseDto>> {
     const { page, limit, search } = data;
     this.loggerService.log(`Fetching all groups`);
+    const groups = await this.getAllGroups(search);
+    return this.paginateGroups(groups, page, limit);
+  }
 
-    const groups = await this.groupRepository.findAll(search);
+  private async getAllGroups(search?: string) {
+    return this.groupRepository.findAll(search);
+  }
 
+  private paginateGroups(groups: any[], page: number, limit: number) {
     return PaginationHelper.paginate<GetGroupResponseDto>(groups, page, limit);
   }
 }

@@ -29,9 +29,15 @@ export class GetAllCostCenterUseCase
   ): Promise<BaseResponseWithPaginationDto<GetCostCenterResponseDto>> {
     const { page, limit, search } = data;
     this.loggerService.log(`Fetching all cost centers`);
+    const costCenters = await this.getAllCostCenters(search);
+    return this.paginateCostCenters(costCenters, page, limit);
+  }
 
-    const costCenters = await this.costCenterRepository.findAll(search);
+  private async getAllCostCenters(search?: string) {
+    return this.costCenterRepository.findAll(search);
+  }
 
+  private paginateCostCenters(costCenters: any[], page: number, limit: number) {
     return PaginationHelper.paginate<GetCostCenterResponseDto>(
       costCenters,
       page,

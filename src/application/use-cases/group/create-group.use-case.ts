@@ -22,20 +22,26 @@ export class CreateGroupUseCase
 
   async execute(data: CreateGroupRequestDto): Promise<GetGroupResponseDto> {
     this.loggerService.log(`Creating group with data: ${JSON.stringify(data)}`);
+    await this.ensureGroupNameIsUnique(data.name);
+    const user = this.getLoggedUser();
+    return await this.createGroup(data, user);
+  }
 
-    const existingGroup = await this.groupRepository.findByName(data.name);
-
+  private async ensureGroupNameIsUnique(name: string): Promise<void> {
+    const existingGroup = await this.groupRepository.findByName(name);
     if (existingGroup) {
-      this.loggerService.warn(`Group with name "${data.name}" already exists`);
-      throw new ConflictException(
-        `Group with name "${data.name}" already exists.`,
-      );
+      this.loggerService.warn(`Group with name "${name}" already exists`);
+      throw new ConflictException(`Group with name "${name}" already exists.`);
     }
+  }
 
+  private getLoggedUser() {
     const session = this.authenticationService.getSession();
-    const user = session?.user;
+    return session?.user;
+  }
 
-    return await this.groupRepository.create({
+  private async createGroup(data: CreateGroupRequestDto, user: any) {
+    return this.groupRepository.create({
       name: data.name,
       description: data.description ?? null,
       company: {

@@ -16,12 +16,19 @@ export class GetAllRolesUseCase implements IBaseUseCase<void, GetRoleDTO[]> {
 
   async execute(): Promise<GetRoleDTO[]> {
     this.loggerService.log('Fetching all roles');
-
-    const roles = await this.roleRepository.findAll(true);
-
+    const roles = await this.getAllRolesWithPermissions();
     this.loggerService.log(`Found ${roles.length} roles`);
+    return roles
+      .filter((role: any) => Array.isArray((role as any).permissions))
+      .map(role => this.mapToGetRoleDTO(role));
+  }
 
-    return roles.map(role => ({
+  private async getAllRolesWithPermissions(): Promise<RoleWithPermissions[]> {
+    return this.roleRepository.findAll(true) as Promise<RoleWithPermissions[]>;
+  }
+
+  private mapToGetRoleDTO(role: RoleWithPermissions): GetRoleDTO {
+    return {
       id: role.id,
       name: role.name,
       description: role.description,
@@ -32,11 +39,11 @@ export class GetAllRolesUseCase implements IBaseUseCase<void, GetRoleDTO[]> {
       updatedById: role.updatedById || '',
       deletedAt: role.deletedAt || new Date(),
       deletedById: role.deletedById || '',
-      permissions: role.permissions?.map(permission => ({
+      permissions: ((role as RoleWithPermissions).permissions?.map(permission => ({
         id: permission.permission.id,
         name: permission.permission.name,
         description: permission.permission.description,
-      })),
-    }));
+      }))) || [],
+    };
   }
 } 
