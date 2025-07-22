@@ -4,4 +4,5 @@ export * from './expense.controller';
 export * from './expense-category.controller';
 export * from './group.controller';
 export * from './project.controller';
+export * from './role.controller';
 export * from './user.controller';

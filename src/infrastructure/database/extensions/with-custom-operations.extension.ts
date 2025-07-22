@@ -119,11 +119,11 @@ export const withCustomOperations = (authenticationService: AuthenticationServic
             return query(args);
           },
           async delete({ model, args, query }) {
-            if (model === 'AuditLog' || model === 'UserToken') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken' || model === 'RolePermission') return query(args);
             throw new ForbiddenOperationException('This operation is not allowed');
           },
           async deleteMany({ model, args, query }) {
-            if (model === 'AuditLog' || model === 'UserToken') return query(args);
+            if (model === 'AuditLog' || model === 'UserToken' || model === 'RolePermission') return query(args);
             throw new ForbiddenOperationException('This operation is not allowed');
           },
         },

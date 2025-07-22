@@ -1,16 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AuthController, ExpenseController, UserController } from './controllers';
 import { UseCasesModule } from '@application/use-cases';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from '@infrastructure/interceptors';
 import { AuthenticationModule } from '@common/authentication';
-import { ExpenseCategoryController } from './controllers/expense-category.controller';
-import { CostCenterController } from './controllers/cost-center.controller';
-import { GroupController } from './controllers/group.controller';
-import { ProjectController } from './controllers/project.controller';
 import { EnviromentModule } from '@common/enviroment';
 import { CookieModule } from '@common/cookie/cookie.module';
 import { StorageModule } from '@infrastructure/storage/storage.module';
+
+import {
+  AuthController,
+  ExpenseController,
+  UserController,
+  RoleController,
+  ExpenseCategoryController,
+  CostCenterController,
+  GroupController,
+  ProjectController,
+} from './controllers';
 
 @Module({
   imports: [
@@ -27,6 +33,7 @@ import { StorageModule } from '@infrastructure/storage/storage.module';
     CostCenterController,
     GroupController,
     ProjectController,
+    RoleController,
     ExpenseController,
   ],
   providers: [

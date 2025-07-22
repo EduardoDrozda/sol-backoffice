@@ -50,6 +50,11 @@ export class CreateUserUseCase
       name: data.name,
       email: data.email,
       phone: data.phone,
+      role: {
+        connect: {
+          id: data.roleId,
+        },
+      },
       company: {
         connect: {
           id: loggedUser!.companyId,

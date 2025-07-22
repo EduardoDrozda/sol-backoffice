@@ -3,8 +3,7 @@ import { IRoleRepository, ROLE_REPOSITORY } from '@domain/interfaces/repositorie
 import { Reflector } from '@nestjs/core';
 import { AUTHORIZATION_KEY, IS_PUBLIC_KEY } from '../decorators';
 import { AuthenticationService } from '../authentication.service';
-import { AuthorizationPermissions } from '../enums/roles.enum';
-import { Console } from 'console';
+import { RoleWithPermissions } from '@domain/models';
 
 
 
@@ -43,13 +42,15 @@ export class AuthorizationGuard implements CanActivate {
 
     const role = await this.roleRepository.findById(user.roleId, true);
 
+    console.log('role', role);
+
     if (!role) {
       throw new UnauthorizedException('User not authorized');
     }
 
     const isAllowed = requiredPermissions
       .some((permission) =>
-        role.permissions.some((p) => p.permission.name === permission),
+        (role as RoleWithPermissions).permissions?.some((p) => p.permission?.name === permission),
       );
 
     if (!isAllowed) {

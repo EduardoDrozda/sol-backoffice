@@ -12,4 +12,7 @@ export class CreateUserRequestDTO {
 
   @IsNotEmpty()
   phone: string;
+
+  @IsNotEmpty()
+  roleId: string;
 }
