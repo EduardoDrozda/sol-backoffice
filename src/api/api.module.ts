@@ -15,6 +15,7 @@ import {
   ExpenseCategoryController,
   CostCenterController,
   GroupController,
+  PermissionController,
   ProjectController,
 } from './controllers';
 
@@ -32,6 +33,7 @@ import {
     ExpenseCategoryController,
     CostCenterController,
     GroupController,
+    PermissionController,
     ProjectController,
     RoleController,
     ExpenseController,

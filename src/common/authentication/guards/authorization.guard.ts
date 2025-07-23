@@ -42,8 +42,6 @@ export class AuthorizationGuard implements CanActivate {
 
     const role = await this.roleRepository.findById(user.roleId, true);
 
-    console.log('role', role);
-
     if (!role) {
       throw new UnauthorizedException('User not authorized');
     }

@@ -46,7 +46,7 @@ export class GetRoleByIdUseCase implements IBaseUseCase<string, GetRoleDTO> {
         id: permission.permission.id,
         name: permission.permission.name,
         description: permission.permission.description,
-      }))) || [],
+      }))).sort((a, b) => a.name.localeCompare(b.name)) || [],
     };
   }
 } 

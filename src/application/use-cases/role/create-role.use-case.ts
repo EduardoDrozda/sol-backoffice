@@ -35,15 +35,15 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
     }
   }
 
-  private async getValidPermissionIds(permissions?: { id: string }[]): Promise<string[]> {
+  private async getValidPermissionIds(permissions?: string[]): Promise<string[]> {
     const permissionIds: string[] = [];
     if (permissions && permissions.length > 0) {
       for (const permission of permissions) {
-        const existingPermission = await this.permissionRepository.findById(permission.id);
+        const existingPermission = await this.permissionRepository.findById(permission);
         if (!existingPermission) {
-          throw new ConflictException(`Permission with id ${permission.id} not found`);
+          throw new ConflictException(`Permission with id ${permission} not found`);
         }
-        permissionIds.push(permission.id);
+        permissionIds.push(permission);
       }
     }
     return permissionIds;

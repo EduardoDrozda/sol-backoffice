@@ -13,7 +13,6 @@ export class CostCenterRepository implements ICostCenterRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   create(data: CreateCostCenterInput): Promise<CostCenterModel> {
-    console.log(data);
     return this.databaseService.costCenter.create({
       data,
     });

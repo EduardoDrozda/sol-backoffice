@@ -1,5 +1,5 @@
 import { IPermissionRepository } from "@domain/interfaces/repositories";
-import { CreatePermissionInput, PermissionModel } from "@domain/models";
+import { CreatePermissionInput, PermissionModel, UpdatePermissionInput } from "@domain/models";
 import { DatabaseService } from "@infrastructure/database";
 import { Injectable } from "@nestjs/common";
 
@@ -24,9 +24,34 @@ export class PermissionRepository implements IPermissionRepository {
     });
   }
 
+  async findAll(): Promise<PermissionModel[]> {
+    return this.databaseService.permission.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+  }
+
   async create(data: CreatePermissionInput): Promise<PermissionModel> {
     return this.databaseService.permission.create({
       data,
+    });
+  }
+
+  async update(id: string, data: UpdatePermissionInput): Promise<PermissionModel> {
+    return this.databaseService.permission.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.databaseService.permission.update({
+      where: { id },
+      data: { deletedAt: new Date() }
     });
   }
 } 

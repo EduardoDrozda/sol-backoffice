@@ -43,7 +43,7 @@ export class GetAllRolesUseCase implements IBaseUseCase<void, GetRoleDTO[]> {
         id: permission.permission.id,
         name: permission.permission.name,
         description: permission.permission.description,
-      }))) || [],
+      }))).sort((a, b) => a.name.localeCompare(b.name)) || [],
     };
   }
 } 

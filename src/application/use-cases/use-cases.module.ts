@@ -11,6 +11,7 @@ import { COST_CENTER_USE_CASES } from './cost-center';
 import { GROUP_USE_CASES } from './group';
 import { PROJECT_USE_CASES } from './project';
 import { ROLE_USE_CASES } from './role';
+import { PERMISSION_USE_CASES } from './permission';
 import { QueueModule } from '@common/queue/queue.module';
 import { EnviromentModule } from '@common/enviroment';
 import { EXPENSES_USE_CASES } from './expense';
@@ -32,6 +33,7 @@ import { EXPENSES_USE_CASES } from './expense';
     ...GROUP_USE_CASES,
     ...PROJECT_USE_CASES,
     ...ROLE_USE_CASES,
+    ...PERMISSION_USE_CASES,
     ...EXPENSES_USE_CASES,
   ],
   exports: [
@@ -42,6 +44,7 @@ import { EXPENSES_USE_CASES } from './expense';
     ...GROUP_USE_CASES,
     ...PROJECT_USE_CASES,
     ...ROLE_USE_CASES,
+    ...PERMISSION_USE_CASES,
     ...EXPENSES_USE_CASES,
   ],
 })

@@ -1,4 +1,4 @@
-export type GetRoleDTO = {
+export type GetPermissionDTO = {
   id: string;
   name: string;
   description?: string | null;
@@ -9,5 +9,4 @@ export type GetRoleDTO = {
   updatedById: string;
   deletedAt: Date;
   deletedById: string;
-  permissions?: any[];
-};
+}; 
