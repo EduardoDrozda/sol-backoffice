@@ -23,7 +23,6 @@ export class CreateAuthUseCase
   }
 
   async execute(data: CreateAuthRequestDTO): Promise<GetAuthResponseDTO> {
-    this.loggerService.context = CreateAuthUseCase.name;
     this.loggerService.log('Executing...');
 
     const { email, password } = data;

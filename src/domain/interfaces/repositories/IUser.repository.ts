@@ -18,6 +18,7 @@ export interface IUserRepository {
   findByEmail(email: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
   create(user: CreateUserInput): Promise<UserModel>;
   findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
+  findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]>;
   findByUserToken(token: string): Promise<UserTokenModel | null>;
   activateUser(id: string): Promise<void>;
   createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel>;

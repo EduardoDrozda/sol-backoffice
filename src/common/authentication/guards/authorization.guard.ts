@@ -28,7 +28,7 @@ export class AuthorizationGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    if (isPublic) {
+    if (isPublic || !requiredPermissions || requiredPermissions.length === 0) {
       return true;
     }
 

@@ -1,9 +1,23 @@
-import { ConfirmUserDTO, CreateUserRequestDTO, ForgotPasswordDTO, ResetPasswordDTO } from '@application/dtos/user/requests';
-import { ConfirmUserUseCase, CreateUserUseCase, ForgotPasswordUseCase, ResetPasswordUseCase } from '@application/use-cases/user';
+import { 
+  ConfirmUserDTO,
+  CreateUserRequestDTO,
+  ForgotPasswordDTO,
+  ResetPasswordDTO,
+} from '@application/dtos/user/requests';
+
+import {
+  ConfirmUserUseCase,
+  CreateUserUseCase,
+  ForgotPasswordUseCase,
+  GetAllUserUseCase,
+  ResetPasswordUseCase,
+} from '@application/use-cases/user';
+
 import { IsPublic } from '@common/authentication';
 import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { Authorization } from '@common/authentication';
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 
 @Controller('users')
 export class UserController {
@@ -12,7 +26,8 @@ export class UserController {
     private readonly confirmUserUseCase: ConfirmUserUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
-  ) {}
+    private readonly getAllUserUseCase: GetAllUserUseCase,
+  ) { }
 
   @Post()
   @Authorization(AuthorizationPermissionsEnum.CREATE_USERS)
@@ -36,5 +51,11 @@ export class UserController {
   @IsPublic()
   async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
     return this.resetPasswordUseCase.execute(resetPasswordDTO);
+  }
+
+  @Get()
+  @Authorization(AuthorizationPermissionsEnum.VIEW_USERS)
+  async getUsers(@Query() query: GetPaginationBaseDto) {
+    return this.getAllUserUseCase.execute(query);
   }
 }

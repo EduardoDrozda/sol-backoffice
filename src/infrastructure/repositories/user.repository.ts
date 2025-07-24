@@ -2,7 +2,6 @@ import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/inter
 import { CreateUserInput, CreateUserTokenInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -23,12 +22,6 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async create(user: CreateUserInput): Promise<UserModel> {
-    return this.databaseService.user.create({
-      data: user,
-    });
-  }
-
   async findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null> {
     return this.databaseService.user.findFirst({
       where: { id },
@@ -43,6 +36,22 @@ export class UserRepository implements IUserRepository {
   async findByUserToken(token: string): Promise<UserTokenModel | null> {
     return this.databaseService.userToken.findFirst({
       where: { token }
+    });
+  }
+
+  async findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]> {
+    return this.databaseService.user.findMany({
+      include: {
+        role: params?.includeRole,
+        company: params?.includeCompany,
+        userTokens: params?.includeUserTokens,
+      },
+    });
+  }
+
+  async create(user: CreateUserInput): Promise<UserModel> {
+    return this.databaseService.user.create({
+      data: user,
     });
   }
 
