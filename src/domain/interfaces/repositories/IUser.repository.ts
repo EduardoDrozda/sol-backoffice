@@ -21,6 +21,7 @@ export interface IUserRepository {
   findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]>;
   findByUserToken(token: string): Promise<UserTokenModel | null>;
   activateUser(id: string): Promise<void>;
+  deactivateUser(id: string): Promise<void>;
   createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel>;
   updatePassword(id: string, password: string): Promise<void>;
   deleteUserToken(token: string): Promise<void>;

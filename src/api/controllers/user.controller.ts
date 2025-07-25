@@ -3,6 +3,7 @@ import {
   CreateUserRequestDTO,
   ForgotPasswordDTO,
   ResetPasswordDTO,
+  ToggleUserStatusDTO,
 } from '@application/dtos/user/requests';
 
 import {
@@ -11,12 +12,13 @@ import {
   ForgotPasswordUseCase,
   GetAllUserUseCase,
   ResetPasswordUseCase,
+  ToggleUserStatusUseCase,
 } from '@application/use-cases/user';
 
 import { IsPublic } from '@common/authentication';
 import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { Authorization } from '@common/authentication';
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 
 @Controller('users')
@@ -27,6 +29,7 @@ export class UserController {
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
     private readonly getAllUserUseCase: GetAllUserUseCase,
+    private readonly toggleUserStatusUseCase: ToggleUserStatusUseCase,
   ) { }
 
   @Post()
@@ -57,5 +60,14 @@ export class UserController {
   @Authorization(AuthorizationPermissionsEnum.VIEW_USERS)
   async getUsers(@Query() query: GetPaginationBaseDto) {
     return this.getAllUserUseCase.execute(query);
+  }
+
+  @Patch(':id/toggle-status')
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_USERS)
+  async toggleUserStatus(
+    @Param('id') id: string,
+    @Body() toggleUserStatusDTO: ToggleUserStatusDTO,
+  ) {
+    return this.toggleUserStatusUseCase.execute({ id, data: toggleUserStatusDTO });
   }
 }

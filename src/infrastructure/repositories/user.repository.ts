@@ -62,6 +62,13 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  async deactivateUser(id: string): Promise<void> {
+    await this.databaseService.user.update({
+      where: { id },
+      data: { isActive: false },
+    });
+  }
+
   async createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel> {
     return this.databaseService.userToken.create({
       data,
