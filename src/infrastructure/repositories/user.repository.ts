@@ -1,4 +1,4 @@
-import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/interfaces/repositories';
+import { IUserRepository, IUserRepositoryFindByEmailParams, IUserRepositoryFindAllResult } from '@domain/interfaces/repositories';
 import { CreateUserInput, CreateUserTokenInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
@@ -40,7 +40,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]> {
+  async findAll(params?: IUserRepositoryFindByEmailParams): Promise<IUserRepositoryFindAllResult> {
     let whereClause: Prisma.UserWhereInput = {};
     let orderBy: Prisma.UserOrderByWithRelationInput = {};
     let include: Prisma.UserInclude = {
@@ -77,11 +77,26 @@ export class UserRepository implements IUserRepository {
       }
     }
 
-    return this.databaseService.user.findMany({
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.databaseService.user.count({
+      where: whereClause,
+    });
+
+    const data = await this.databaseService.user.findMany({
       include,
       where: whereClause,
       orderBy,
+      skip,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+    };
   }
 
   async create(user: CreateUserInput): Promise<UserModel> {

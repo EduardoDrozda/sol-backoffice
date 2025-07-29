@@ -7,7 +7,6 @@ import { LoggerService } from '@common/logger';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 import { GetUserResponseDto } from '@application/dtos/user/responses/get-user.response.dto';
 import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
-import { PaginationHelper } from '@application/helpers';
 
 @Injectable()
 export class GetAllUserUseCase implements
@@ -27,16 +26,18 @@ export class GetAllUserUseCase implements
 
     this.loggerService.log('Executing...');
 
-    const users = await this.userRepository.findAll({
+    const result = await this.userRepository.findAll({
       includeRole: true,
       search,
       sort,
       order,
+      page,
+      limit,
     });
 
-    this.loggerService.log(`Found ${users.length} users`);
+    this.loggerService.log(`Found ${result.total} users total, showing ${result.data.length} in current page`);
 
-    const mappedUsers: GetUserResponseDto[] = users.map((user) => ({
+    const mappedUsers: GetUserResponseDto[] = result.data.map((user) => ({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -50,10 +51,16 @@ export class GetAllUserUseCase implements
       isActive: user.isActive,
     }));
 
-    return PaginationHelper.paginate<GetUserResponseDto>(
-      mappedUsers,
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: mappedUsers,
+      total: result.total,
       page,
       limit,
-    );
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 }

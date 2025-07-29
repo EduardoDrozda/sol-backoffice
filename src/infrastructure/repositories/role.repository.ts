@@ -1,7 +1,8 @@
-import { IRoleRepository } from "@domain/interfaces/repositories";
+import { IRoleRepository, IRoleRepositoryFindAllParams, IRoleRepositoryFindAllResult } from "@domain/interfaces/repositories";
 import { CreateRoleInput, RoleModel,  RoleWithPermissions,  UpdateRoleInput } from "@domain/models";
 import { DatabaseService } from "@infrastructure/database";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class RoleRepository implements IRoleRepository {
@@ -55,27 +56,59 @@ export class RoleRepository implements IRoleRepository {
     });
   }
 
-  async findAll(includePermissions?: boolean): Promise<RoleModel[] | RoleWithPermissions[]> {
-    if (includePermissions) {
-      return this.databaseService.role.findMany({
-        where: {
-          deletedAt: null,
-        },
-        include: {
-          permissions: {
-            include: {
-              permission: true,
-            },
+  async findAll(params?: IRoleRepositoryFindAllParams): Promise<IRoleRepositoryFindAllResult> {
+    let whereClause: Prisma.RoleWhereInput = {
+      deletedAt: null,
+    };
+    let orderBy: Prisma.RoleOrderByWithRelationInput = {};
+    let include: Prisma.RoleInclude = {};
+
+    if (params?.includePermissions) {
+      include = {
+        permissions: {
+          include: {
+            permission: true,
           },
         },
-      });
+      };
     }
 
-    return this.databaseService.role.findMany({
-      where: {
-        deletedAt: null,
-      },
+    if (params?.search) {
+      whereClause = {
+        ...whereClause,
+        OR: [
+          { name: { contains: params.search, mode: 'insensitive' } },
+          { description: { contains: params.search, mode: 'insensitive' } },
+        ],
+      };
+    }
+
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+  
+    const total = await this.databaseService.role.count({
+      where: whereClause,
     });
+
+    const data = await this.databaseService.role.findMany({
+      where: whereClause,
+      include,
+      orderBy,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+    };
   }
 
   async create(data: CreateRoleInput): Promise<RoleWithPermissions> {

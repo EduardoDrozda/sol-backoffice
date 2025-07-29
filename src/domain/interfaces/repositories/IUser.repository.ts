@@ -15,13 +15,20 @@ export interface IUserRepositoryFindByEmailParams {
   sort?: string;
   order?: 'asc' | 'desc';
   search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface IUserRepositoryFindAllResult {
+  data: UserWithRelations[];
+  total: number;
 }
 
 export interface IUserRepository {
   findByEmail(email: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
   create(user: CreateUserInput): Promise<UserModel>;
   findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
-  findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]>;
+  findAll(params?: IUserRepositoryFindByEmailParams): Promise<IUserRepositoryFindAllResult>;
   findByUserToken(token: string): Promise<UserTokenModel | null>;
   activateUser(id: string): Promise<void>;
   deactivateUser(id: string): Promise<void>;

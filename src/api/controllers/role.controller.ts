@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@application/dtos/role/requests';
 import {
@@ -9,6 +9,7 @@ import {
   UpdateRoleUseCase,
 } from '@application/use-cases/role';
 import { Authorization } from '@common/authentication';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 
 @Controller('roles')
 export class RoleController {
@@ -28,8 +29,8 @@ export class RoleController {
 
   @Get()
   @Authorization(AuthorizationPermissionsEnum.VIEW_ROLES)
-  async getAllRoles() {
-    return this.getAllRolesUseCase.execute();
+  async getAllRoles(@Query() query: GetPaginationBaseDto) {
+    return this.getAllRolesUseCase.execute(query);
   }
 
   @Get(':id')

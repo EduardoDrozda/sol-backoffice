@@ -4,9 +4,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '../IBase.use-case';
 import { LoggerService } from '@common/logger';
 import { GetRoleDTO } from '@application/dtos/role/responses/get-role.dto';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
+import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 
 @Injectable()
-export class GetAllRolesUseCase implements IBaseUseCase<void, GetRoleDTO[]> {
+export class GetAllRolesUseCase implements IBaseUseCase<GetPaginationBaseDto, BaseResponseWithPaginationDto<GetRoleDTO>> {
   constructor(
     @Inject(ROLE_REPOSITORY) private readonly roleRepository: IRoleRepository,
     private readonly loggerService: LoggerService,
@@ -14,17 +16,50 @@ export class GetAllRolesUseCase implements IBaseUseCase<void, GetRoleDTO[]> {
     this.loggerService.context = this.constructor.name;
   }
 
-  async execute(): Promise<GetRoleDTO[]> {
+  async execute(data: GetPaginationBaseDto): Promise<BaseResponseWithPaginationDto<GetRoleDTO>> {
+    const { page, limit, search, sort, order } = data;
+
     this.loggerService.log('Fetching all roles');
-    const roles = await this.getAllRolesWithPermissions();
-    this.loggerService.log(`Found ${roles.length} roles`);
-    return roles
+    const result = await this.getAllRolesWithPermissions({ search, sort, order, page, limit });
+    this.loggerService.log(`Found ${result.total} roles total, showing ${result.data.length} in current page`);
+
+    const mappedRoles: GetRoleDTO[] = result.data
       .filter((role: any) => Array.isArray((role as any).permissions))
-      .map(role => this.mapToGetRoleDTO(role));
+      .map(role => this.mapToGetRoleDTO(role as RoleWithPermissions));
+
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: mappedRoles,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 
-  private async getAllRolesWithPermissions(): Promise<RoleWithPermissions[]> {
-    return this.roleRepository.findAll(true) as Promise<RoleWithPermissions[]>;
+  private async getAllRolesWithPermissions(params?: { 
+    search?: string; 
+    sort?: string; 
+    order?: 'asc' | 'desc';
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: RoleWithPermissions[]; total: number }> {
+    const result = await this.roleRepository.findAll({
+      includePermissions: true,
+      search: params?.search,
+      sort: params?.sort,
+      order: params?.order,
+      page: params?.page,
+      limit: params?.limit,
+    });
+    
+    return {
+      data: result.data as RoleWithPermissions[],
+      total: result.total,
+    };
   }
 
   private mapToGetRoleDTO(role: RoleWithPermissions): GetRoleDTO {
