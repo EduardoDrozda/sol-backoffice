@@ -6,8 +6,8 @@ export type GetUserResponseDto = {
     id?: string | null;
     name?: string | null;
   } | null;
-  company_id: string | null;
-  created_at: Date;
-  updated_at: Date;
-  is_active: boolean;
+  companyId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
 };

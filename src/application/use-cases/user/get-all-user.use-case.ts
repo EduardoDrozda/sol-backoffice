@@ -44,10 +44,10 @@ export class GetAllUserUseCase implements
         id: user.role?.id,
         name: user.role?.name,
       },
-      company_id: user.companyId,
-      created_at: user.createdAt,
-      updated_at: user.updatedAt,
-      is_active: user.isActive,
+      companyId: user.companyId,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      isActive: user.isActive,
     }));
 
     return PaginationHelper.paginate<GetUserResponseDto>(

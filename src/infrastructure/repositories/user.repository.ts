@@ -43,6 +43,11 @@ export class UserRepository implements IUserRepository {
   async findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]> {
     let whereClause: Prisma.UserWhereInput = {};
     let orderBy: Prisma.UserOrderByWithRelationInput = {};
+    let include: Prisma.UserInclude = {
+      role: params?.includeRole,
+      company: params?.includeCompany,
+      userTokens: params?.includeUserTokens,
+    };
 
     if (params?.search) {
       whereClause = {
@@ -59,12 +64,21 @@ export class UserRepository implements IUserRepository {
       };
     }
 
+    if(params?.sort === 'role') {
+      include = {
+        ...include,
+        role: true
+      }
+
+      orderBy = {
+        role: {
+          name: params.order,
+        }
+      }
+    }
+
     return this.databaseService.user.findMany({
-      include: {
-        role: params?.includeRole,
-        company: params?.includeCompany,
-        userTokens: params?.includeUserTokens,
-      },
+      include,
       where: whereClause,
       orderBy,
     });
