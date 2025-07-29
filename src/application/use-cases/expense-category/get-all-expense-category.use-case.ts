@@ -8,7 +8,6 @@ import {
 import { LoggerService } from '@common/logger';
 import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 import { GetExpenseCategoryResponseDto } from '@application/dtos/expense-category/response';
-import { PaginationHelper } from '@application/helpers';
 
 @Injectable()
 export class GetAllExpenseCategoryUseCase
@@ -27,15 +26,29 @@ export class GetAllExpenseCategoryUseCase
   }
 
   async execute(data: GetPaginationBaseDto) {
-    const { page, limit, search } = data;
-    this.loggerService.log(`Fetching all expense categories for companyId`);
+    const { page, limit, search, sort, order } = data;
+    this.loggerService.log(`Fetching all expense categories`);
 
-    const categories = await this.expenseCategoryRepository.findAll(search);
-
-    return PaginationHelper.paginate<GetExpenseCategoryResponseDto>(
-      categories,
+    const result = await this.expenseCategoryRepository.findAll({
+      search,
+      sort,
+      order,
       page,
       limit,
-    );
+    });
+
+    this.loggerService.log(`Found ${result.total} expense categories total, showing ${result.data.length} in current page`);
+
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: result.data,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 }

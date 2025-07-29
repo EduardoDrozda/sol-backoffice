@@ -4,9 +4,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '../IBase.use-case';
 import { LoggerService } from '@common/logger';
 import { GetPermissionDTO } from '@application/dtos/permission/responses/get-permission.dto';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
+import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 
 @Injectable()
-export class GetAllPermissionsUseCase implements IBaseUseCase<void, GetPermissionDTO[]> {
+export class GetAllPermissionsUseCase implements IBaseUseCase<GetPaginationBaseDto, BaseResponseWithPaginationDto<GetPermissionDTO>> {
   constructor(
     @Inject(PERMISSION_REPOSITORY) private readonly permissionRepository: IPermissionRepository,
     private readonly loggerService: LoggerService,
@@ -14,11 +16,33 @@ export class GetAllPermissionsUseCase implements IBaseUseCase<void, GetPermissio
     this.loggerService.context = this.constructor.name;
   }
 
-  async execute(): Promise<GetPermissionDTO[]> {
+  async execute(data: GetPaginationBaseDto): Promise<BaseResponseWithPaginationDto<GetPermissionDTO>> {
+    const { page, limit, search, sort, order } = data;
+
     this.loggerService.log('Getting all permissions');
-    const permissions = await this.permissionRepository.findAll();
-    this.loggerService.log(`Found ${permissions.length} permissions`);
-    return permissions.map(permission => this.mapToGetPermissionDTO(permission));
+    const result = await this.permissionRepository.findAll({
+      search,
+      sort,
+      order,
+      page,
+      limit,
+    });
+    
+    this.loggerService.log(`Found ${result.total} permissions total, showing ${result.data.length} in current page`);
+
+    const mappedPermissions: GetPermissionDTO[] = result.data.map(permission => this.mapToGetPermissionDTO(permission));
+
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: mappedPermissions,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 
   private mapToGetPermissionDTO(permission: PermissionModel): GetPermissionDTO {

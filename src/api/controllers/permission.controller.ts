@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { AuthorizationPermissionsEnum } from '@common/authentication/enums';
 import { CreatePermissionRequestDTO, UpdatePermissionRequestDTO } from '@application/dtos/permission/requests';
 import {
@@ -9,6 +9,7 @@ import {
   UpdatePermissionUseCase,
 } from '@application/use-cases/permission';
 import { Authorization } from '@common/authentication';
+import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 
 @Controller('permissions')
 export class PermissionController {
@@ -28,8 +29,8 @@ export class PermissionController {
 
   @Get()
   @Authorization(AuthorizationPermissionsEnum.VIEW_PERMISSIONS)
-  async getAllPermissions() {
-    return this.getAllPermissionsUseCase.execute();
+  async getAllPermissions(@Query() query: GetPaginationBaseDto) {
+    return this.getAllPermissionsUseCase.execute(query);
   }
 
   @Get(':id')

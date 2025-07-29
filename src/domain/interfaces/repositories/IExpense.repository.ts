@@ -13,11 +13,18 @@ export type ExpenseFilterParams = {
   projectId?: string;
   issueDate?: string;
   userId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface IExpenseRepositoryFindAllResult {
+  data: ExpenseModel[];
+  total: number;
 }
 
 export interface IExpenseRepository {
   create(data: ExpenseCreateInput): Promise<ExpenseModel>;
-  findAll(params: ExpenseFilterParams): Promise<ExpenseModel[]>;
+  findAll(params: ExpenseFilterParams): Promise<IExpenseRepositoryFindAllResult>;
   findById(id: string): Promise<ExpenseModel | null>;
   update(data: ExpenseUpdateInput): Promise<ExpenseModel>;
   delete(id: string): Promise<void>;

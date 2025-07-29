@@ -1,4 +1,4 @@
-import { IProjectRepository } from '@domain/interfaces/repositories';
+import { IProjectRepository, IProjectRepositoryFindAllParams, IProjectRepositoryFindAllResult } from '@domain/interfaces/repositories';
 import {
   ProjectModel,
   CreateProjectInput,
@@ -18,25 +18,27 @@ export class ProjectRepository implements IProjectRepository {
     });
   }
 
-  findAll(filter?: string): Promise<ProjectModel[]> {
-    const params: Prisma.ProjectFindManyArgs = {
-      orderBy: {
-        name: 'asc',
-      },
+  async findAll(params?: IProjectRepositoryFindAllParams): Promise<IProjectRepositoryFindAllResult> {
+    let whereClause: Prisma.ProjectWhereInput = {
+      deletedAt: null,
+    };
+    let orderBy: Prisma.ProjectOrderByWithRelationInput = {
+      name: 'asc',
     };
 
-    if (filter) {
-      params.where = {
+    if (params?.search) {
+      whereClause = {
+        ...whereClause,
         OR: [
           {
             name: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
           {
             description: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
@@ -44,7 +46,31 @@ export class ProjectRepository implements IProjectRepository {
       };
     }
 
-    return this.databaseService.project.findMany(params);
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.databaseService.project.count({
+      where: whereClause,
+    });
+
+    const data = await this.databaseService.project.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+    };
   }
 
   findById(id: string): Promise<ProjectModel | null> {

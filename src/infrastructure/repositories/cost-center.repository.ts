@@ -1,4 +1,4 @@
-import { ICostCenterRepository } from '@domain/interfaces/repositories';
+import { ICostCenterRepository, ICostCenterRepositoryFindAllParams, ICostCenterRepositoryFindAllResult } from '@domain/interfaces/repositories';
 import {
   CostCenterModel,
   CreateCostCenterInput,
@@ -18,25 +18,27 @@ export class CostCenterRepository implements ICostCenterRepository {
     });
   }
 
-  findAll(filter?: string): Promise<CostCenterModel[]> {
-    const params: Prisma.CostCenterFindManyArgs = {
-      orderBy: {
-        name: 'asc',
-      },
+  async findAll(params?: ICostCenterRepositoryFindAllParams): Promise<ICostCenterRepositoryFindAllResult> {
+    let whereClause: Prisma.CostCenterWhereInput = {
+      deletedAt: null,
+    };
+    let orderBy: Prisma.CostCenterOrderByWithRelationInput = {
+      name: 'asc',
     };
 
-    if (filter) {
-      params.where = {
+    if (params?.search) {
+      whereClause = {
+        ...whereClause,
         OR: [
           {
             name: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
           {
             description: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
@@ -44,7 +46,31 @@ export class CostCenterRepository implements ICostCenterRepository {
       };
     }
 
-    return this.databaseService.costCenter.findMany(params);
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.databaseService.costCenter.count({
+      where: whereClause,
+    });
+
+    const data = await this.databaseService.costCenter.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+    };
   }
 
   findById(id: string): Promise<CostCenterModel | null> {

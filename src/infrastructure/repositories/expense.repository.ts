@@ -1,4 +1,4 @@
-import { ExpenseFilterParams, IExpenseRepository } from "@domain/interfaces/repositories";
+import { ExpenseFilterParams, IExpenseRepository, IExpenseRepositoryFindAllResult } from "@domain/interfaces/repositories";
 import { ExpenseCreateInput, ExpenseModel, ExpenseUpdateInput } from "@domain/models";
 import { DatabaseService } from "@infrastructure/database";
 import { Injectable } from "@nestjs/common";
@@ -13,8 +13,8 @@ export class ExpenseRepository implements IExpenseRepository {
       data,
     });
   }
-  findAll(params: ExpenseFilterParams): Promise<ExpenseModel[]> {
-    const { search, isPaid, categoryId, costCenterId, groupId, projectId, issueDate } = params;
+  async findAll(params: ExpenseFilterParams): Promise<IExpenseRepositoryFindAllResult> {
+    const { search, isPaid, categoryId, costCenterId, groupId, projectId, issueDate, page, limit } = params;
 
     const where: Prisma.ExpenseWhereInput = {
       userId: params.userId ?? undefined,
@@ -36,10 +36,25 @@ export class ExpenseRepository implements IExpenseRepository {
       amount: params.sort === 'amount' ? params.order === 'asc' ? 'asc' : 'desc' : undefined,
     };
 
-    return this.databaseService.expense.findMany({
+    const currentPage = page || 1;
+    const currentLimit = limit || 10;
+    const skip = (currentPage - 1) * currentLimit;
+
+    const total = await this.databaseService.expense.count({
+      where,
+    });
+
+    const data = await this.databaseService.expense.findMany({
       where,
       orderBy,
+      skip,
+      take: currentLimit,
     });
+
+    return {
+      data,
+      total,
+    };
   }
   findById(id: string): Promise<ExpenseModel | null> {
     return this.databaseService.expense.findUnique({

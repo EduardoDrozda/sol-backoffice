@@ -1,4 +1,4 @@
-import { IExpenseCategoryRepository } from '@domain/interfaces/repositories';
+import { IExpenseCategoryRepository, IExpenseCategoryRepositoryFindAllParams, IExpenseCategoryRepositoryFindAllResult } from '@domain/interfaces/repositories';
 import {
   CreateExpenseCategoryInput,
   ExpenseCategoryModel,
@@ -12,25 +12,27 @@ import { Prisma } from '@prisma/client';
 export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  findAll(filter?: string): Promise<ExpenseCategoryModel[]> {
-    const params: Prisma.ExpenseCategoryFindManyArgs = {
-      orderBy: {
-        name: 'asc',
-      },
+  async findAll(params?: IExpenseCategoryRepositoryFindAllParams): Promise<IExpenseCategoryRepositoryFindAllResult> {
+    let whereClause: Prisma.ExpenseCategoryWhereInput = {
+      deletedAt: null,
+    };
+    let orderBy: Prisma.ExpenseCategoryOrderByWithRelationInput = {
+      name: 'asc',
     };
 
-    if (filter) {
-      params.where = {
+    if (params?.search) {
+      whereClause = {
+        ...whereClause,
         OR: [
           {
             name: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
           {
             description: {
-              contains: filter,
+              contains: params.search,
               mode: 'insensitive',
             },
           },
@@ -38,7 +40,31 @@ export class ExpenseCategoryRepository implements IExpenseCategoryRepository {
       };
     }
 
-    return this.databaseService.expenseCategory.findMany(params);
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.databaseService.expenseCategory.count({
+      where: whereClause,
+    });
+
+    const data = await this.databaseService.expenseCategory.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+    };
   }
 
   findById(id: string): Promise<ExpenseCategoryModel | null> {

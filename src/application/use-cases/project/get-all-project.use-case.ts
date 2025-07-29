@@ -8,7 +8,6 @@ import {
 import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 import { GetProjectResponseDto } from '@application/dtos/project/response';
 import { LoggerService } from '@common/logger';
-import { PaginationHelper } from '@application/helpers';
 
 @Injectable()
 export class GetAllProjectUseCase
@@ -27,21 +26,29 @@ export class GetAllProjectUseCase
   async execute(
     data: GetPaginationBaseDto,
   ): Promise<BaseResponseWithPaginationDto<GetProjectResponseDto>> {
-    const { page, limit, search } = data;
+    const { page, limit, search, sort, order } = data;
     this.loggerService.log(`Fetching all projects`);
-    const projects = await this.getAllProjects(search);
-    return this.paginateProjects(projects, page, limit);
-  }
-
-  private async getAllProjects(search?: string) {
-    return this.projectRepository.findAll(search);
-  }
-
-  private paginateProjects(projects: any[], page: number, limit: number) {
-    return PaginationHelper.paginate<GetProjectResponseDto>(
-      projects,
+    
+    const result = await this.projectRepository.findAll({
+      search,
+      sort,
+      order,
       page,
       limit,
-    );
+    });
+
+    this.loggerService.log(`Found ${result.total} projects total, showing ${result.data.length} in current page`);
+
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: result.data,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 } 

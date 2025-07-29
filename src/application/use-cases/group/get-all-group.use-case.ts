@@ -6,7 +6,6 @@ import {
 } from '@domain/interfaces/repositories';
 import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 import { LoggerService } from '@common/logger';
-import { PaginationHelper } from '@application/helpers/pagination.helper';
 import { GetExpenseCategoryResponseDto } from '@application/dtos/expense-category/response';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
 import { GetGroupResponseDto } from '@application/dtos/group/response';
@@ -28,17 +27,29 @@ export class GetAllGroupUseCase
   async execute(
     data: GetPaginationBaseDto,
   ): Promise<BaseResponseWithPaginationDto<GetGroupResponseDto>> {
-    const { page, limit, search } = data;
+    const { page, limit, search, sort, order } = data;
     this.loggerService.log(`Fetching all groups`);
-    const groups = await this.getAllGroups(search);
-    return this.paginateGroups(groups, page, limit);
-  }
+    
+    const result = await this.groupRepository.findAll({
+      search,
+      sort,
+      order,
+      page,
+      limit,
+    });
 
-  private async getAllGroups(search?: string) {
-    return this.groupRepository.findAll(search);
-  }
+    this.loggerService.log(`Found ${result.total} groups total, showing ${result.data.length} in current page`);
 
-  private paginateGroups(groups: any[], page: number, limit: number) {
-    return PaginationHelper.paginate<GetGroupResponseDto>(groups, page, limit);
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: result.data,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 }

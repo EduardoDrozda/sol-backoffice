@@ -8,7 +8,6 @@ import {
 import { BaseResponseWithPaginationDto } from '@application/dtos/base/response';
 import { GetCostCenterResponseDto } from '@application/dtos/cost-center/response';
 import { LoggerService } from '@common/logger';
-import { PaginationHelper } from '@application/helpers';
 
 @Injectable()
 export class GetAllCostCenterUseCase
@@ -27,21 +26,29 @@ export class GetAllCostCenterUseCase
   async execute(
     data: GetPaginationBaseDto,
   ): Promise<BaseResponseWithPaginationDto<GetCostCenterResponseDto>> {
-    const { page, limit, search } = data;
+    const { page, limit, search, sort, order } = data;
     this.loggerService.log(`Fetching all cost centers`);
-    const costCenters = await this.getAllCostCenters(search);
-    return this.paginateCostCenters(costCenters, page, limit);
-  }
-
-  private async getAllCostCenters(search?: string) {
-    return this.costCenterRepository.findAll(search);
-  }
-
-  private paginateCostCenters(costCenters: any[], page: number, limit: number) {
-    return PaginationHelper.paginate<GetCostCenterResponseDto>(
-      costCenters,
+    
+    const result = await this.costCenterRepository.findAll({
+      search,
+      sort,
+      order,
       page,
       limit,
-    );
+    });
+
+    this.loggerService.log(`Found ${result.total} cost centers total, showing ${result.data.length} in current page`);
+
+    const totalPages = Math.ceil(result.total / limit);
+
+    return {
+      data: result.data,
+      total: result.total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
   }
 }

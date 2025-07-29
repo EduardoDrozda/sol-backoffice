@@ -1,7 +1,8 @@
-import { IPermissionRepository } from "@domain/interfaces/repositories";
+import { IPermissionRepository, IPermissionRepositoryFindAllParams, IPermissionRepositoryFindAllResult } from "@domain/interfaces/repositories";
 import { CreatePermissionInput, PermissionModel, UpdatePermissionInput } from "@domain/models";
 import { DatabaseService } from "@infrastructure/database";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class PermissionRepository implements IPermissionRepository {
@@ -24,15 +25,59 @@ export class PermissionRepository implements IPermissionRepository {
     });
   }
 
-  async findAll(): Promise<PermissionModel[]> {
-    return this.databaseService.permission.findMany({
-      where: {
-        deletedAt: null,
-      },
-      orderBy: {
-        name: 'asc',
-      },
+  async findAll(params?: IPermissionRepositoryFindAllParams): Promise<IPermissionRepositoryFindAllResult> {
+    let whereClause: Prisma.PermissionWhereInput = {
+      deletedAt: null,
+    };
+    let orderBy: Prisma.PermissionOrderByWithRelationInput = {
+      name: 'asc',
+    };
+
+    if (params?.search) {
+      whereClause = {
+        ...whereClause,
+        OR: [
+          {
+            name: {
+              contains: params.search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            description: {
+              contains: params.search,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      };
+    }
+
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.databaseService.permission.count({
+      where: whereClause,
     });
+
+    const data = await this.databaseService.permission.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+    };
   }
 
   async create(data: CreatePermissionInput): Promise<PermissionModel> {
