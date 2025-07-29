@@ -2,6 +2,7 @@ import { IUserRepository, IUserRepositoryFindByEmailParams } from '@domain/inter
 import { CreateUserInput, CreateUserTokenInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -40,12 +41,32 @@ export class UserRepository implements IUserRepository {
   }
 
   async findAll(params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations[]> {
+    let whereClause: Prisma.UserWhereInput = {};
+    let orderBy: Prisma.UserOrderByWithRelationInput = {};
+
+    if (params?.search) {
+      whereClause = {
+        OR: [
+          { name: { contains: params?.search, mode: 'insensitive' } },
+          { email: { contains: params?.search, mode: 'insensitive' } },
+        ],
+      };
+    }
+
+    if (params?.sort && params?.order) {
+      orderBy = {
+        [params.sort]: params.order,
+      };
+    }
+
     return this.databaseService.user.findMany({
       include: {
         role: params?.includeRole,
         company: params?.includeCompany,
         userTokens: params?.includeUserTokens,
       },
+      where: whereClause,
+      orderBy,
     });
   }
 

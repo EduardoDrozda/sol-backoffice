@@ -12,6 +12,9 @@ export interface IUserRepositoryFindByEmailParams {
   includeExpenseCategories?: boolean;
   includeGroups?: boolean;
   includeUserTokens?: boolean;
+  sort?: string;
+  order?: 'asc' | 'desc';
+  search?: string;
 }
 
 export interface IUserRepository {

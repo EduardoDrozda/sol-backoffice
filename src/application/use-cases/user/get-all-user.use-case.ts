@@ -23,12 +23,15 @@ export class GetAllUserUseCase implements
   }
 
   async execute(data: GetPaginationBaseDto): Promise<BaseResponseWithPaginationDto<GetUserResponseDto>> {
-    const { page, limit, search } = data;
+    const { page, limit, search, sort, order } = data;
 
     this.loggerService.log('Executing...');
 
     const users = await this.userRepository.findAll({
       includeRole: true,
+      search,
+      sort,
+      order,
     });
 
     this.loggerService.log(`Found ${users.length} users`);
