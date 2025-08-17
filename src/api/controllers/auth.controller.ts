@@ -1,7 +1,6 @@
 import { CreateAuthRequestDTO } from '@application/dtos/auth/requests';
 import { CreateAuthUseCase } from '@application/use-cases/auth';
 import { IsPublic } from '@common/authentication';
-import { CookieService } from '@common/cookie/cookie.service';
 import { EnviromentService } from '@common/enviroment';
 import {
   Body,
@@ -25,6 +24,19 @@ export class AuthController {
   @Post('/login')
   async login(@Body() createAuthDto: CreateAuthRequestDTO) {
     return this.createAuthUseCase.execute(createAuthDto);
+  }
+
+  @Post('/logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(this.env.get('COOKIE_NAME'), {
+      path: this.env.get('COOKIE_PATH') || '/',
+      domain: this.env.get('COOKIE_DOMAIN') || undefined,
+      httpOnly: this.env.get('COOKIE_HTTP_ONLY') === 'true',
+      secure: this.env.get('COOKIE_SECURE') === 'true',
+      sameSite: this.env.get('COOKIE_SAME_SITE') as any,
+    });
+
+    return { message: 'Logout realizado com sucesso' };
   }
 
   @Get('check')
