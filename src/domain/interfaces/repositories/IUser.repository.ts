@@ -4,19 +4,22 @@ import { PrismaClient } from '@prisma/client';
 
 export const USER_REPOSITORY = Symbol('IUserRepository');
 
-export interface IUserRepositoryFindByEmailParams {
+export interface IUserRepositoryFindParams {
   includeRole?: boolean;
   includeCompany?: boolean;
   includePermissions?: boolean;
   includeCostCenters?: boolean;
   includeExpenseCategories?: boolean;
   includeGroups?: boolean;
-  includeUserTokens?: boolean;
+  includeUserTokens?: boolean;  
+}
+
+export interface IUserRepositoryFindPaginatedParams extends IUserRepositoryFindParams {
+  page: number;
+  limit: number;
+  search?: string;
   sort?: string;
   order?: 'asc' | 'desc';
-  search?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface IUserRepositoryFindAllResult {
@@ -25,10 +28,10 @@ export interface IUserRepositoryFindAllResult {
 }
 
 export interface IUserRepository {
-  findByEmail(email: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
+  findByEmail(email: string, params?: IUserRepositoryFindParams): Promise<UserWithRelations | null>;
   create(user: CreateUserInput): Promise<UserModel>;
-  findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null>;
-  findAll(params?: IUserRepositoryFindByEmailParams): Promise<IUserRepositoryFindAllResult>;
+  findById(id: string, params?: IUserRepositoryFindParams): Promise<UserWithRelations | null>;
+  findAll(params?: IUserRepositoryFindPaginatedParams): Promise<IUserRepositoryFindAllResult>;
   findByUserToken(token: string): Promise<UserTokenModel | null>;
   activateUser(id: string): Promise<void>;
   deactivateUser(id: string): Promise<void>;

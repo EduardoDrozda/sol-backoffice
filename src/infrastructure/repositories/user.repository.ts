@@ -1,4 +1,4 @@
-import { IUserRepository, IUserRepositoryFindByEmailParams, IUserRepositoryFindAllResult } from '@domain/interfaces/repositories';
+import { IUserRepository, IUserRepositoryFindParams, IUserRepositoryFindAllResult, IUserRepositoryFindPaginatedParams } from '@domain/interfaces/repositories';
 import { CreateUserInput, CreateUserTokenInput, UserModel, UserTokenModel, UserWithRelations } from '@domain/models';
 import { DatabaseService } from '@infrastructure/database';
 import { Injectable } from '@nestjs/common';
@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 export class UserRepository implements IUserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async findByEmail(email: string, params?: IUserRepositoryFindByEmailParams): Promise<any | null> {
+  async findByEmail(email: string, params?: IUserRepositoryFindParams): Promise<any | null> {
     return this.databaseService.user.findFirst({
       where: {
         email: {
@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async findById(id: string, params?: IUserRepositoryFindByEmailParams): Promise<UserWithRelations | null> {
+  async findById(id: string, params?: IUserRepositoryFindParams): Promise<UserWithRelations | null> {
     return this.databaseService.user.findFirst({
       where: { id },
       include: {
@@ -40,7 +40,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async findAll(params?: IUserRepositoryFindByEmailParams): Promise<IUserRepositoryFindAllResult> {
+  async findAll(params?: IUserRepositoryFindPaginatedParams): Promise<IUserRepositoryFindAllResult> {
     let whereClause: Prisma.UserWhereInput = {};
     let orderBy: Prisma.UserOrderByWithRelationInput = {};
     let include: Prisma.UserInclude = {

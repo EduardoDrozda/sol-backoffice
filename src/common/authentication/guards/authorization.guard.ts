@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { IRoleRepository, ROLE_REPOSITORY } from '@domain/interfaces/repositories';
+import { IRoleRepository, IUserRepository, ROLE_REPOSITORY, USER_REPOSITORY } from '@domain/interfaces/repositories';
 import { Reflector } from '@nestjs/core';
 import { AUTHORIZATION_KEY, IS_PUBLIC_KEY } from '../decorators';
 import { AuthenticationService } from '../authentication.service';
@@ -12,6 +12,7 @@ export class AuthorizationGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     @Inject(ROLE_REPOSITORY) private readonly roleRepository: IRoleRepository,
+    @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     private readonly authenticationService: AuthenticationService,
   ) { }
 
@@ -40,9 +41,12 @@ export class AuthorizationGuard implements CanActivate {
 
     const user = session.user;
 
-    const role = await this.roleRepository.findById(user.roleId, true);
+    const userFoundPromise =  this.userRepository.findById(user.id);
+    const roleFoundPromise =  this.roleRepository.findById(user.roleId, true);
 
-    if (!role) {
+    const [userFound, role] = await Promise.all([userFoundPromise, roleFoundPromise]);
+    console.log(userFound);
+    if (!role || !userFound?.isActive) {
       throw new UnauthorizedException('User not authorized');
     }
 
