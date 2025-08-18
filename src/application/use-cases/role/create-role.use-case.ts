@@ -5,12 +5,14 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '../IBase.use-case';
 import { LoggerService } from '@common/logger';
 import { GetRoleDTO } from '@application/dtos/role/responses/get-role.dto';
+import { AuthenticationService } from '@common/authentication';
 
 @Injectable()
 export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, GetRoleDTO> {
   constructor(
     @Inject(ROLE_REPOSITORY) private readonly roleRepository: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY) private readonly permissionRepository: IPermissionRepository,
+    private readonly authenticationService: AuthenticationService,
     private readonly loggerService: LoggerService,
   ) {
     this.loggerService.context = this.constructor.name;
@@ -22,6 +24,7 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
     const permissionIds = await this.getValidPermissionIds(data.permissions);
     const createData = this.buildCreateData(data, permissionIds);
     const { id: newRoleId } = await this.createRole(createData);
+    
     this.loggerService.log(`Role created with id: ${newRoleId}`);
     const newRole = await this.getRoleByIdWithPermissions(newRoleId);
     return this.mapToGetRoleDTO(newRole);
@@ -67,7 +70,15 @@ export class CreateRoleUseCase implements IBaseUseCase<CreateRoleRequestDTO, Get
   }
 
   private async createRole(createData: any) {
-    return this.roleRepository.create(createData);
+    const loggedUser = this.authenticationService.getSession();
+    return this.roleRepository.create({
+      ...createData,
+      Company: {
+        connect: {
+          id: loggedUser?.user.companyId
+        }
+      }
+    });
   }
 
   private async getRoleByIdWithPermissions(roleId: string): Promise<RoleWithPermissions> {

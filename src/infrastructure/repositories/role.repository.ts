@@ -11,7 +11,10 @@ export class RoleRepository implements IRoleRepository {
   async findById(id: string, includePermissions?: boolean): Promise<RoleModel | RoleWithPermissions | null> {
     if (includePermissions) {
       return this.databaseService.role.findUnique({
-        where: { id },
+        where: { 
+          id,
+          deletedAt: null, // Filtrar apenas registros não deletados
+        },
         include: {
           permissions: {
             include: {
@@ -23,7 +26,10 @@ export class RoleRepository implements IRoleRepository {
     }
 
     return this.databaseService.role.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null, // Filtrar apenas registros não deletados
+      },
     });
   }
 
@@ -34,7 +40,7 @@ export class RoleRepository implements IRoleRepository {
           name: {
             equals: name,
             mode: 'insensitive',
-          },
+          }
         },
         include: {
           permissions: {
@@ -51,7 +57,7 @@ export class RoleRepository implements IRoleRepository {
         name: {
           equals: name,
           mode: 'insensitive',
-        },
+        }
       },
     });
   }
@@ -126,7 +132,10 @@ export class RoleRepository implements IRoleRepository {
 
   async update(id: string, data: UpdateRoleInput): Promise<RoleWithPermissions> {
     return this.databaseService.role.update({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null, // Garantir que só atualize registros não deletados
+      },
       data,
       include: {
         permissions: {
@@ -140,7 +149,10 @@ export class RoleRepository implements IRoleRepository {
 
   async delete(id: string): Promise<void> {
     await this.databaseService.role.update({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null, // Garantir que só delete registros não deletados
+      },
       data: { deletedAt: new Date() }
     });
   }

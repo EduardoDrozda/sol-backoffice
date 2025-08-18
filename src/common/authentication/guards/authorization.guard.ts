@@ -45,7 +45,6 @@ export class AuthorizationGuard implements CanActivate {
     const roleFoundPromise =  this.roleRepository.findById(user.roleId, true);
 
     const [userFound, role] = await Promise.all([userFoundPromise, roleFoundPromise]);
-    console.log(userFound);
     if (!role || !userFound?.isActive) {
       throw new UnauthorizedException('User not authorized');
     }
