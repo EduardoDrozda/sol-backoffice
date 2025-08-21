@@ -4,9 +4,11 @@ import { CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@application/dtos/ro
 import {
   CreateRoleUseCase,
   DeleteRoleUseCase,
+  GetAllRolesSimpleUseCase,
   GetAllRolesUseCase,
   GetRoleByIdUseCase,
   UpdateRoleUseCase,
+
 } from '@application/use-cases/role';
 import { Authorization } from '@common/authentication';
 import { GetPaginationBaseDto } from '@application/dtos/base/requests';
@@ -19,6 +21,7 @@ export class RoleController {
     private readonly getRoleByIdUseCase: GetRoleByIdUseCase,
     private readonly updateRoleUseCase: UpdateRoleUseCase,
     private readonly deleteRoleUseCase: DeleteRoleUseCase,
+    private readonly getAllRolesSimpleUseCase: GetAllRolesSimpleUseCase,
   ) {}
 
   @Post()
@@ -31,6 +34,12 @@ export class RoleController {
   @Authorization(AuthorizationPermissionsEnum.VIEW_ROLES)
   async getAllRoles(@Query() query: GetPaginationBaseDto) {
     return this.getAllRolesUseCase.execute(query);
+  }
+
+  @Get('all')
+  @Authorization(AuthorizationPermissionsEnum.VIEW_ROLES)
+  async getAllRolesSimple() {
+    return this.getAllRolesSimpleUseCase.execute();
   }
 
   @Get(':id')

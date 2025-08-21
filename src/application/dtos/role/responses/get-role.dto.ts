@@ -11,3 +11,5 @@ export type GetRoleDTO = {
   deletedById: string;
   permissions?: any[];
 };
+
+export type GetRoleSimpleDTO = Pick<GetRoleDTO, 'id' | 'name' | 'description'>;

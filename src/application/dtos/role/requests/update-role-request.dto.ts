@@ -3,6 +3,10 @@ import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
 export class UpdateRoleRequestDTO {
   @IsOptional()
   @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
   name?: string;
 
   @IsOptional()

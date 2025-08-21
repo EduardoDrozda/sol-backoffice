@@ -34,9 +34,8 @@ export class CreateUserUseCase
 
     await this.ensureUserDoesNotExist(data.email);
     const loggedUser = this.getLoggedUser();
-    const hashedPassword = await this.hashPassword(data.password);
     const emailConfirmationToken = await this.generateEmailConfirmationToken(data.email);
-    const newUser = await this.createUser(data, loggedUser, hashedPassword, emailConfirmationToken);
+    const newUser = await this.createUser(data, loggedUser, emailConfirmationToken);
     this.loggerService.log(`User created with id: ${newUser.id}`);
     await this.sendWelcomeEmailToQueue(newUser, emailConfirmationToken);
     this.loggerService.log(`Email confirmation job sent to queue: ${newUser.email}`);
@@ -55,15 +54,11 @@ export class CreateUserUseCase
     return session?.user;
   }
 
-  private async hashPassword(password: string): Promise<string> {
-    return this.hashService.hash(password);
-  }
-
   private async generateEmailConfirmationToken(email: string): Promise<string> {
     return this.hashService.hash(email);
   }
 
-  private async createUser(data: CreateUserRequestDTO, loggedUser: any, hashedPassword: string, emailConfirmationToken: string) {
+  private async createUser(data: CreateUserRequestDTO, loggedUser: any, emailConfirmationToken: string) {
     return this.userRepository.create({
       name: data.name,
       email: data.email,
@@ -84,7 +79,6 @@ export class CreateUserUseCase
           type: TokenTypeEnum.EMAIL_CONFIRMATION
         }
       },
-      password: hashedPassword,
     });
   }
 

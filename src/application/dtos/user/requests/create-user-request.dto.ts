@@ -8,9 +8,6 @@ export class CreateUserRequestDTO {
   email: string;
 
   @IsNotEmpty()
-  password: string;
-
-  @IsNotEmpty()
   phone: string;
 
   @IsNotEmpty()

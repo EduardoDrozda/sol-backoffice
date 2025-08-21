@@ -117,6 +117,12 @@ export class RoleRepository implements IRoleRepository {
     };
   }
 
+  async findAllSimple(): Promise<RoleModel[] | RoleWithPermissions[]> {
+    return this.databaseService.role.findMany({
+      where: { deletedAt: null },
+    });
+  }
+
   async create(data: CreateRoleInput): Promise<RoleWithPermissions> {
     return this.databaseService.role.create({
       data,
