@@ -137,4 +137,13 @@ export class UserRepository implements IUserRepository {
       where: { token },
     });
   }
+
+  async deleteUserTokensByUserIdAndType(userId: string, type: string): Promise<void> {
+    await this.databaseService.userToken.deleteMany({
+      where: { 
+        userId,
+        type
+      }
+    });
+  }
 }

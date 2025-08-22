@@ -3,6 +3,8 @@ import {
   CreateUserRequestDTO,
   ForgotPasswordDTO,
   ResetPasswordDTO,
+  ResetUserPasswordDTO,
+  ResendConfirmationEmailDTO,
   ToggleUserStatusDTO,
 } from '@application/dtos/user/requests';
 
@@ -12,6 +14,8 @@ import {
   ForgotPasswordUseCase,
   GetAllUserUseCase,
   ResetPasswordUseCase,
+  ResetUserPasswordUseCase,
+  ResendConfirmationEmailUseCase,
   ToggleUserStatusUseCase,
 } from '@application/use-cases/user';
 
@@ -28,6 +32,8 @@ export class UserController {
     private readonly confirmUserUseCase: ConfirmUserUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
+    private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
+    private readonly resendConfirmationEmailUseCase: ResendConfirmationEmailUseCase,
     private readonly getAllUserUseCase: GetAllUserUseCase,
     private readonly toggleUserStatusUseCase: ToggleUserStatusUseCase,
   ) { }
@@ -60,6 +66,18 @@ export class UserController {
   @Authorization(AuthorizationPermissionsEnum.VIEW_USERS)
   async getUsers(@Query() query: GetPaginationBaseDto) {
     return this.getAllUserUseCase.execute(query);
+  }
+
+  @Post(':id/resend-confirmation-email')
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_USERS)
+  async resendConfirmationEmail(@Param('id') id: string) {
+    return this.resendConfirmationEmailUseCase.execute({ userId: id });
+  }
+
+  @Post(':id/reset-password')
+  @Authorization(AuthorizationPermissionsEnum.UPDATE_USERS)
+  async resetUserPassword(@Param('id') id: string) {
+    return this.resetUserPasswordUseCase.execute({ userId: id });
   }
 
   @Patch(':id/toggle-status')

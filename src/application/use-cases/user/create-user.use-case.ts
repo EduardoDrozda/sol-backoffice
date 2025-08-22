@@ -13,6 +13,7 @@ import { QueueEmailProducer } from '@common/queue/email/producers';
 import { EmailTypeEnum, SendEmailOptions } from '@common/email';
 import { UserModel } from '@domain/models';
 import { TokenTypeEnum } from '@domain/enums';
+import { DateHelper } from '@application/helpers';
 
 
 @Injectable()
@@ -59,6 +60,9 @@ export class CreateUserUseCase
   }
 
   private async createUser(data: CreateUserRequestDTO, loggedUser: any, emailConfirmationToken: string) {
+    const hours = 24; // Token válido por 24 horas
+    const expiresAt = DateHelper.addHours(new Date(), hours);
+    
     return this.userRepository.create({
       name: data.name,
       email: data.email,
@@ -76,7 +80,8 @@ export class CreateUserUseCase
       userTokens: {
         create: {
           token: emailConfirmationToken,
-          type: TokenTypeEnum.EMAIL_CONFIRMATION
+          type: TokenTypeEnum.EMAIL_CONFIRMATION,
+          expiresAt
         }
       },
     });
@@ -90,6 +95,7 @@ export class CreateUserUseCase
       context: {
         userName: user.name,
         loginUrl: `${this.enviromentService.get('FRONTEND_URL')}/confirm-email?token=${emailConfirmationToken}`,
+        expiresAt: 24,
       },
     };
 

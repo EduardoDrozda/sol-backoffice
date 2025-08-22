@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Bem-vindo à Solúvel!</title>
+    <title>Reenvio de Confirmação - Solúvel!</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -105,65 +105,64 @@
             font-weight: 600;
             font-size: 18px;
         }
+        .expiry-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo-placeholder">SOLÚVEL</div>
-            <h1>Bem-vindo à Solúvel!</h1>
-            <div class="subtitle">Centro de Inteligência</div>
+            <div class="logo-placeholder">SOL</div>
+            <h1>Confirmação de Email</h1>
+            <div class="subtitle">Reenvio de confirmação de conta</div>
         </div>
         
         <div class="content">
-            <div class="welcome-text">
-                Olá <strong>{{userName}}</strong>! 👋
-            </div>
+            <div class="welcome-text">Olá, {{userName}}!</div>
             
             <div class="message">
-                É com grande satisfação que damos as boas-vindas a você na <strong>Solúvel Centro de Inteligência</strong>!
-            </div>
-            
-            <div class="message">
-                Sua conta foi criada com sucesso em nosso sistema de backoffice. Para começar sua jornada conosco e acessar
-                todas as ferramentas disponíveis, é necessário confirmar sua conta.
+                Recebemos uma solicitação para reenviar o email de confirmação da sua conta. 
+                Para confirmar seu email e ativar sua conta, clique no botão abaixo:
             </div>
             
             <div class="highlight">
-                <strong>Próximo passo:</strong> Clique no botão abaixo para confirmar sua conta e acessar o sistema pela
-                primeira vez.
+                <strong>Importante:</strong> Este link é válido por {{expiresAt}} {{expiresUnit}}. 
+                Após esse período, será necessário solicitar um novo link de confirmação.
             </div>
             
             <div class="button-container">
-                <a href="{{loginUrl}}" class="button">Confirmar Conta e Acessar Sistema</a>
+                <a href="{{loginUrl}}" class="button">Confirmar Email</a>
             </div>
             
             <div class="message">
-                Após a confirmação, você terá acesso completo ao nosso backoffice, onde poderá gerenciar projetos, colaborar com
-                a equipe e contribuir para nossos objetivos de inovação e excelência.
+                Se o botão não funcionar, copie e cole o link abaixo no seu navegador:
+            </div>
+            
+            <div class="message" style="word-break: break-all; color: #007bff;">
+                {{loginUrl}}
             </div>
             
             <div class="message">
-                Se você tiver alguma dúvida ou precisar de suporte, nossa equipe está sempre disponível para ajudar.
+                Se você não solicitou este email, pode ignorá-lo com segurança. 
+                Sua conta permanecerá inativa até que o email seja confirmado.
             </div>
             
-            <div class="message">
-                Bem-vindo à família Solúvel! 🚀
-            </div>
-            
-            <div class="highlight" style="background-color: #fff3cd; border-left-color: #ffc107;">
-                <strong>⚠️ Importante:</strong> Este link de confirmação é válido por {{expiresAt}} {{expiresUnit}}. 
-                Após esse período, será necessário solicitar um novo link através do sistema.
+            <div class="expiry-info">
+                ⏰ Este link expira em {{expiresAt}} {{expiresUnit}}
             </div>
         </div>
         
         <div class="footer">
-            <p>Este e-mail foi enviado automaticamente. Por favor, não responda a este e-mail.</p>
-            <div class="company-info">
-                Solúvel Centro de Inteligência<br>
-                Design • Engenharia • Tecnologia
-            </div>
+            <div>Este é um email automático, não responda a esta mensagem.</div>
+            <div class="company-info">Solúvel - Sistema de Gestão</div>
         </div>
     </div>
 </body>
-</html> 
+</html>

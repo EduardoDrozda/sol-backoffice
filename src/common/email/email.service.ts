@@ -33,12 +33,27 @@ export class EmailService {
           subject: 'Bem-vindo à Solúvel!',
           template: EmailTemplateEnum.WELCOME,
           ...emailOptions,
+          context: {
+            ...context,
+            expiresUnit: context.expiresAt > 1 ? 'horas' : 'hora',
+          }
         });
         break;
       case EmailTypeEnum.FORGOT_PASSWORD:
         await this.mailerService.sendMail({
           subject: 'Redefinição de Senha',
           template: EmailTemplateEnum.FORGOT_PASSWORD,
+          ...emailOptions,
+          context: {
+            ...context,
+            expiresUnit: context.expiresAt > 1 ? 'horas' : 'hora',
+          }
+        });
+        break;
+      case EmailTypeEnum.RESEND_CONFIRMATION:
+        await this.mailerService.sendMail({
+          subject: 'Reenvio de Confirmação de Email - Solúvel',
+          template: EmailTemplateEnum.RESEND_CONFIRMATION,
           ...emailOptions,
           context: {
             ...context,

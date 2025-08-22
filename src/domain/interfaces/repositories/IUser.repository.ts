@@ -38,4 +38,5 @@ export interface IUserRepository {
   createUserToken(data: CreateUserTokenInput): Promise<UserTokenModel>;
   updatePassword(id: string, password: string): Promise<void>;
   deleteUserToken(token: string): Promise<void>;
+  deleteUserTokensByUserIdAndType(userId: string, type: string): Promise<void>;
 }
