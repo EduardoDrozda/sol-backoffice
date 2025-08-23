@@ -1,5 +1,6 @@
 import { 
   ConfirmUserDTO,
+  ConfirmEmailWithPasswordDTO,
   CreateUserRequestDTO,
   ForgotPasswordDTO,
   ResetPasswordDTO,
@@ -10,6 +11,7 @@ import {
 
 import {
   ConfirmUserUseCase,
+  ConfirmEmailWithPasswordUseCase,
   CreateUserUseCase,
   ForgotPasswordUseCase,
   GetAllUserUseCase,
@@ -30,6 +32,7 @@ export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly confirmUserUseCase: ConfirmUserUseCase,
+    private readonly confirmEmailWithPasswordUseCase: ConfirmEmailWithPasswordUseCase,
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
     private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
@@ -48,6 +51,12 @@ export class UserController {
   @IsPublic()
   async confirmUser(@Body() confirmUserDTO: ConfirmUserDTO) {
     return this.confirmUserUseCase.execute(confirmUserDTO);
+  }
+
+  @Post('confirm-email')
+  @IsPublic()
+  async confirmEmailWithPassword(@Body() confirmEmailWithPasswordDTO: ConfirmEmailWithPasswordDTO) {
+    return this.confirmEmailWithPasswordUseCase.execute(confirmEmailWithPasswordDTO);
   }
 
   @Post('forgot-password')
