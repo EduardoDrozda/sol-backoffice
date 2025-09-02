@@ -1,5 +1,4 @@
-// Modal Component Root
-app-modal {
+.modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -26,7 +25,7 @@ app-modal {
   }
 }
 
-app-modal {
+.modal {
   background-color: rgba(0, 0, 0, 0.3) !important;
   opacity: 1 !important;
   visibility: visible !important;
