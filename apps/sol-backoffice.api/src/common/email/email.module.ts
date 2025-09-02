@@ -23,7 +23,7 @@ import * as path from 'node:path';
           from: `"${envService.get('EMAIL_FROM_NAME')}" <${envService.get('EMAIL_FROM_ADDRESS')}>`,
         },
         template: {
-          dir: path.join(process.cwd(), './src/common/email/templates'),
+          dir: path.join(process.cwd(), 'apps/sol-backoffice.api/src/common/email/templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -37,4 +37,4 @@ import * as path from 'node:path';
   providers: [EmailService],
   exports: [EmailService],
 })
-export class EmailModule {} 
+export class EmailModule {}

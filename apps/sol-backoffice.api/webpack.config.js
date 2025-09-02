@@ -31,6 +31,31 @@ module.exports = {
       outputHashing: 'none',
       generatePackageJson: true,
       sourceMaps: true,
+      swcOptions: {
+        jsc: {
+          target: 'es2017',
+          parser: {
+            syntax: 'typescript',
+            decorators: true,
+            dynamicImport: true
+          },
+          transform: {
+            decoratorMetadata: true,
+            legacyDecorator: true
+          },
+          keepClassNames: true,
+          externalHelpers: true,
+          loose: true
+        },
+        module: {
+          type: 'es6'
+        },
+        sourceMaps: true,
+        exclude: [
+          '**/node_modules/@prisma/client/**',
+          '**/node_modules/.prisma/**'
+        ]
+      }
     })
   ],
 };

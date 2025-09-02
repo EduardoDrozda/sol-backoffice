@@ -32,12 +32,15 @@ export const envSchema = z
     // Email configuration
     EMAIL_HOST: z.string().default('smtp.resend.com'),
     EMAIL_PORT: z.coerce.number().default(587),
-    EMAIL_SECURE: z.string().transform((val) => val === 'true').default('false'),
+    EMAIL_SECURE: z.string().transform((val) => val === 'true').default(false),
     EMAIL_USER: z.string(),
     EMAIL_PASSWORD: z.string(),
     EMAIL_FROM_NAME: z.string().default('Sistema'),
     EMAIL_FROM_ADDRESS: z.string(),
+    EMAIL_TEMPLATES_PATH: z.string().default('apps/sol-backoffice.api/src/common/email/templates'),
+
     FRONTEND_URL: z.string().default('http://localhost:4200'),
+    API_URL: z.string().default('http://localhost:8081'),
 
     // Redis configuration
     REDIS_HOST: z.string().default('localhost'),

@@ -12,7 +12,8 @@
     "api:dev": "nx run sol-backoffice.api:serve",
     "web:dev": "nx run sol-backoffice.web:serve",
     "web:build": "nx run sol-backoffice.web:build",
-    "web:build:prod": "nx run sol-backoffice.web:build:production"
+    "web:build:prod": "nx run sol-backoffice.web:build:production",
+    "fullstack:dev": "nx run-many --target=serve --all"
   },
   "private": true,
   "dependencies": {
@@ -72,8 +73,8 @@
     "@nx/web": "21.4.1",
     "@nx/webpack": "21.4.1",
     "@nx/workspace": "21.4.1",
-    "@swc-node/register": "~1.9.1",
-    "@swc/core": "~1.5.7",
+    "@swc-node/register": "~1.9.2",
+    "@swc/core": "~1.13.3",
     "@swc/helpers": "~0.5.11",
     "@swc/jest": "~0.2.38",
     "@types/bcrypt": "^6.0.0",
