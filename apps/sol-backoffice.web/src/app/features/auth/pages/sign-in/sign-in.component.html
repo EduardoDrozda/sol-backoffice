@@ -1,4 +1,4 @@
-<app-auth-layout>
+<sol-auth-layout>
   <div class="sign-in">
     <div class="sign-in__header">
       <h1 class="sol-title">Login</h1>
@@ -6,7 +6,7 @@
     </div>
 
     <form [formGroup]="form" class="sign-in__form" (ngSubmit)="onSubmit()">
-      <app-input
+      <sol-input
         type="email"
         id="email"
         placeholder="E-mail"
@@ -15,7 +15,7 @@
         formControlName="email"
       />
 
-      <app-input
+      <sol-input
         type="password"
         id="password"
         placeholder="Senha"
@@ -26,7 +26,7 @@
 
       <button type="submit" class="sol-button primary" [disabled]="form.invalid || loading.isLoading('sign-in')">
         @if (loading.isLoading('sign-in')) {
-        <app-loading [size]="4" [inline]="true" />
+        <sol-loading [size]="4" [inline]="true" />
         }
         Login
       </button>
@@ -37,4 +37,4 @@
     </div>
   </div>
 
-</app-auth-layout>
+</sol-auth-layout>

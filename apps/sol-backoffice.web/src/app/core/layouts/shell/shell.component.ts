@@ -7,7 +7,7 @@ import { AuthService } from '@core/services';
 import { RoutesEnum } from '@core/enums/routes.enum';
 
 @Component({
-  selector: 'app-shell',
+  selector: 'sol-shell',
   standalone: true,
   imports: [RouterOutlet, PwaStatusComponent, CommonModule, RouterLinkActive, RouterLink],
   templateUrl: './shell.component.html',

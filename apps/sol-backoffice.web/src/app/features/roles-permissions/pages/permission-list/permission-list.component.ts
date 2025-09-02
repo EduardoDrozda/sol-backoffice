@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-permission-list',
+  selector: 'sol-permission-list',
   standalone: true,
   imports: [],
   templateUrl: './permission-list.component.html',

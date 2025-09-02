@@ -1,4 +1,4 @@
-<app-auth-layout>
+<sol-auth-layout>
   <div class="confirm-email">
     <div class="confirm-email__header">
       <h1 class="sol-title">Confirmação de Email</h1>
@@ -7,7 +7,7 @@
 
     @if (tokenValid) {
       <form [formGroup]="form" class="confirm-email__form" (ngSubmit)="onSubmit()">
-        <app-input
+        <sol-input
           type="password"
           id="password"
           placeholder="Nova senha"
@@ -16,7 +16,7 @@
           formControlName="password"
         />
 
-        <app-input
+        <sol-input
           type="password"
           id="confirmPassword"
           placeholder="Confirmar senha"
@@ -27,7 +27,7 @@
 
         <button type="submit" class="sol-button primary" [disabled]="form.invalid || loading.isLoading('confirm-email')">
           @if (loading.isLoading('confirm-email')) {
-            <app-loading [size]="4" [inline]="true" />
+            <sol-loading [size]="4" [inline]="true" />
           }
           Confirmar Email e Ativar Conta
         </button>
@@ -38,9 +38,9 @@
       </div>
     } @else {
       <div class="confirm-email__loading">
-        <app-loading [size]="8" />
+        <sol-loading [size]="8" />
         <p>Validando token...</p>
       </div>
     }
   </div>
-</app-auth-layout>
+</sol-auth-layout>

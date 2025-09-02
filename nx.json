@@ -58,5 +58,30 @@
     "test": {
       "dependsOn": ["^build"]
     }
+  },
+  "generators": {
+    "@nx/angular:component": {
+      "style": "scss",
+      "prefix": "sol",
+      "type": "component"
+    },
+    "@nx/angular:service": {
+      "type": "service"
+    },
+    "@nx/angular:pipe": {
+      "type": "pipe"
+    },
+    "@nx/angular:directive": {
+      "type": "directive"
+    },
+    "@nx/angular:guard": {
+      "type": "guard"
+    },
+    "@nx/angular:interceptor": {
+      "type": "interceptor"
+    },
+    "@nx/angular:resolver": {
+      "type": "resolver"
+    }
   }
 }

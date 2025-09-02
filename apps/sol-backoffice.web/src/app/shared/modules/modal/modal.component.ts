@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModalService } from './modal.service';
 
 @Component({
-  selector: 'app-modal',
+  selector: 'sol-modal',
   imports: [CommonModule],
   template: `
     <div class="modal-overlay" (click)="onBackdropClick($event)">

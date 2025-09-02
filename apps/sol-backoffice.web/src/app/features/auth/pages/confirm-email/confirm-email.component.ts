@@ -25,7 +25,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 }
 
 @Component({
-  selector: 'app-confirm-email',
+  selector: 'sol-confirm-email',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, AuthLayoutComponent, LoadingComponent, InputComponent],
   templateUrl: './confirm-email.component.html',

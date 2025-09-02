@@ -4,7 +4,7 @@ import { PwaService } from '@core/services/pwa/pwa.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-pwa-status',
+  selector: 'sol-pwa-status',
   imports: [CommonModule],
   templateUrl: './pwa-status.component.html',
   styleUrl: './pwa-status.component.scss'

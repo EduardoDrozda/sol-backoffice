@@ -2,7 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-loading',
+  selector: 'sol-loading',
   imports: [CommonModule],
   template: `
     <div

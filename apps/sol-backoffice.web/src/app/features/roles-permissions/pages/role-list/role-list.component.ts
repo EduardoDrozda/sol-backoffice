@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged, finalize, takeUntil } from 'rxjs/op
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-role-list',
+  selector: 'sol-role-list',
   standalone: true,
   imports: [TableComponent, ReactiveFormsModule],
   templateUrl: './role-list.component.html',

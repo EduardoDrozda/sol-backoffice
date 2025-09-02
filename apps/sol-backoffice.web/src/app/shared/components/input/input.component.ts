@@ -4,7 +4,7 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/f
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
-  selector: 'app-input',
+  selector: 'sol-input',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxMaskDirective],
   templateUrl: './input.component.html',

@@ -10,7 +10,7 @@ import { finalize } from 'rxjs/operators';
 import { RoutesEnum } from '@core/enums/routes.enum';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'sol-sign-in',
   imports: [ReactiveFormsModule, AuthLayoutComponent, LoadingComponent, InputComponent, RouterModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss'

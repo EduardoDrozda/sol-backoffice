@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { InputComponent } from '@shared/components';
 
 @Component({
-  selector: 'app-role-modal',
+  selector: 'sol-role-modal',
   standalone: true,
   imports: [ModalComponent, CommonModule, ReactiveFormsModule, InputComponent],
   templateUrl: './role-modal.component.html',

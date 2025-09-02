@@ -24,7 +24,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 }
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'sol-reset-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, AuthLayoutComponent, LoadingComponent, InputComponent],
   templateUrl: './reset-password.component.html',

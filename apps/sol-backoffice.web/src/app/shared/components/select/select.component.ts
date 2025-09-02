@@ -9,7 +9,7 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'app-select',
+  selector: 'sol-select',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './select.component.html',

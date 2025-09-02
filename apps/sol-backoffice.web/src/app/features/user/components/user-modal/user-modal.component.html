@@ -1,7 +1,7 @@
-<app-modal [title]="title" #modal>
+<sol-modal [title]="title" #modal>
   <div modal-body class="user-modal">
     <form [formGroup]="form" class="user-modal__form">
-      <app-input
+      <sol-input
         id="name"
         label="Nome"
         type="text"
@@ -12,7 +12,7 @@
         [error]="!!(form.get('name')?.errors && form.get('name')?.touched)"
       />
 
-      <app-input
+      <sol-input
         id="email"
         label="E-mail"
         type="email"
@@ -23,7 +23,7 @@
         [icon]="'fa-solid fa-envelope'"
       />
 
-      <app-input
+      <sol-input
         id="phone"
         label="Telefone"
         type="tel"
@@ -37,7 +37,7 @@
       />
 
       <div class="sol-input-group">
-        <app-select
+        <sol-select
           id="role"
           label="Perfil"
           placeholder="Selecione um perfil"
@@ -54,4 +54,4 @@
     <button class="sol-button" (click)="onCancel()">Cancelar</button>
     <button class="sol-button accent" (click)="onSubmit()" [disabled]="form.invalid || form.pristine">Salvar</button>
   </div>
-</app-modal>
+</sol-modal>

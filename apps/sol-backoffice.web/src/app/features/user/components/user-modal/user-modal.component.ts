@@ -10,7 +10,7 @@ import { ToastService } from '@shared/modules/toast/toast.service';
 import { SelectComponent, SelectOption, InputComponent } from '@shared/components';
 
 @Component({
-  selector: 'app-user-modal',
+  selector: 'sol-user-modal',
   imports: [ModalComponent, CommonModule, ReactiveFormsModule, SelectComponent, InputComponent],
   templateUrl: './user-modal.component.html',
   styleUrl: './user-modal.component.scss'

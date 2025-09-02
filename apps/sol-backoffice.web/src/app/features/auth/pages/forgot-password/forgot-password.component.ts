@@ -11,7 +11,7 @@ import { finalize } from 'rxjs/operators';
 import { RoutesEnum } from '@core/enums/routes.enum';
 
 @Component({
-  selector: 'app-forgot-password',
+  selector: 'sol-forgot-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, AuthLayoutComponent, LoadingComponent, InputComponent],
   templateUrl: './forgot-password.component.html',

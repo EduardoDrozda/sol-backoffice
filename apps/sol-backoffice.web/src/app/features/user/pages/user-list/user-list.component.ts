@@ -13,7 +13,7 @@ import { ToastService } from '@shared/modules/toast';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'sol-user-list',
   imports: [TableComponent, ReactiveFormsModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
