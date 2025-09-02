@@ -1,0 +1,57 @@
+<app-modal [title]="title" #modal>
+  <div modal-body class="user-modal">
+    <form [formGroup]="form" class="user-modal__form">
+      <app-input
+        id="name"
+        label="Nome"
+        type="text"
+        placeholder="Digite seu nome"
+        formControlName="name"
+        [required]="true"
+        [icon]="'fa-solid fa-user'"
+        [error]="!!(form.get('name')?.errors && form.get('name')?.touched)"
+      />
+
+      <app-input
+        id="email"
+        label="E-mail"
+        type="email"
+        placeholder="Digite seu e-mail"
+        formControlName="email"
+        [required]="true"
+        [error]="!!(form.get('email')?.errors && form.get('email')?.touched)"
+        [icon]="'fa-solid fa-envelope'"
+      />
+
+      <app-input
+        id="phone"
+        label="Telefone"
+        type="tel"
+        placeholder="(00) 00000-0000"
+        formControlName="phone"
+        [required]="true"
+        mask="(00) 00000-0000"
+        [showMaskTyped]="true"
+        [dropSpecialCharacters]="false"
+        [icon]="'fa-solid fa-phone'"
+      />
+
+      <div class="sol-input-group">
+        <app-select
+          id="role"
+          label="Perfil"
+          placeholder="Selecione um perfil"
+          [options]="roleOptions()"
+          formControlName="roleId"
+          [required]="true"
+          [error]="!!(form.get('roleId')?.errors && form.get('roleId')?.touched)"
+          [icon]="'fa-solid fa-user-shield'"
+        />
+      </div>
+    </form>
+  </div>
+  <div modal-footer class="modal-footer">
+    <button class="sol-button" (click)="onCancel()">Cancelar</button>
+    <button class="sol-button accent" (click)="onSubmit()" [disabled]="form.invalid || form.pristine">Salvar</button>
+  </div>
+</app-modal>

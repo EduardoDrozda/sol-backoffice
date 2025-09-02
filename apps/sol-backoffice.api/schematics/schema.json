@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "PrismaSchematic",
+  "title": "Prisma Schematic",
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string",
+      "description": "Comando do Prisma a ser executado",
+      "enum": ["generate", "migrate", "db:push", "db:pull", "studio", "seed"],
+      "default": "generate"
+    },
+    "args": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Argumentos adicionais para o comando do Prisma"
+    }
+  },
+  "required": ["command"]
+}

@@ -1,0 +1,40 @@
+<app-auth-layout>
+  <div class="sign-in">
+    <div class="sign-in__header">
+      <h1 class="sol-title">Login</h1>
+      <p class="sol-subtitle">Entre com seu e-mail e senha para acessar sua conta</p>
+    </div>
+
+    <form [formGroup]="form" class="sign-in__form" (ngSubmit)="onSubmit()">
+      <app-input
+        type="email"
+        id="email"
+        placeholder="E-mail"
+        [error]="!!(form.get('email')?.errors && form.get('email')?.touched)"
+        [errorMessage]="getErrorMessage('email')"
+        formControlName="email"
+      />
+
+      <app-input
+        type="password"
+        id="password"
+        placeholder="Senha"
+        [error]="!!(form.get('password')?.errors && form.get('password')?.touched)"
+        [errorMessage]="getErrorMessage('password')"
+        formControlName="password"
+      />
+
+      <button type="submit" class="sol-button primary" [disabled]="form.invalid || loading.isLoading('sign-in')">
+        @if (loading.isLoading('sign-in')) {
+        <app-loading [size]="4" [inline]="true" />
+        }
+        Login
+      </button>
+    </form>
+
+    <div class="sign-in__footer">
+      <a routerLink="/forgot-password" class="forgot-password-link">Esqueceu sua senha?</a>
+    </div>
+  </div>
+
+</app-auth-layout>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bem-vindo à Solúvel!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .header .subtitle {
+            margin-top: 10px;
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        .content {
+            padding: 40px 30px;
+            background-color: white;
+        }
+        .welcome-text {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .message {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        .highlight {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .button-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 26, 26, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 26, 26, 0.4);
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #e9ecef;
+        }
+        .company-info {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .logo-placeholder {
+            width: 120px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 0 auto 20px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-placeholder">SOLÚVEL</div>
+            <h1>Bem-vindo à Solúvel!</h1>
+            <div class="subtitle">Centro de Inteligência</div>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-text">
+                Olá <strong>{{userName}}</strong>! 👋
+            </div>
+            
+            <div class="message">
+                É com grande satisfação que damos as boas-vindas a você na <strong>Solúvel Centro de Inteligência</strong>!
+            </div>
+            
+            <div class="message">
+                Sua conta foi criada com sucesso em nosso sistema de backoffice. Para começar sua jornada conosco e acessar
+                todas as ferramentas disponíveis, é necessário confirmar sua conta.
+            </div>
+            
+            <div class="highlight">
+                <strong>Próximo passo:</strong> Clique no botão abaixo para confirmar sua conta e acessar o sistema pela
+                primeira vez.
+            </div>
+            
+            <div class="button-container">
+                <a href="{{loginUrl}}" class="button">Confirmar Conta e Acessar Sistema</a>
+            </div>
+            
+            <div class="message">
+                Após a confirmação, você terá acesso completo ao nosso backoffice, onde poderá gerenciar projetos, colaborar com
+                a equipe e contribuir para nossos objetivos de inovação e excelência.
+            </div>
+            
+            <div class="message">
+                Se você tiver alguma dúvida ou precisar de suporte, nossa equipe está sempre disponível para ajudar.
+            </div>
+            
+            <div class="message">
+                Bem-vindo à família Solúvel! 🚀
+            </div>
+            
+            <div class="highlight" style="background-color: #fff3cd; border-left-color: #ffc107;">
+                <strong>⚠️ Importante:</strong> Este link de confirmação é válido por {{expiresAt}} {{expiresUnit}}. 
+                Após esse período, será necessário solicitar um novo link através do sistema.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Este e-mail foi enviado automaticamente. Por favor, não responda a este e-mail.</p>
+            <div class="company-info">
+                Solúvel Centro de Inteligência<br>
+                Design • Engenharia • Tecnologia
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
