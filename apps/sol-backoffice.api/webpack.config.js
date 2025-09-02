@@ -26,10 +26,27 @@ module.exports = {
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: ["./src/assets"],
-      optimization: false,
+      assets: [
+        "./src/assets",
+        {
+          glob: "**/*",
+          input: "./src/common/email/templates",
+          output: "common/email/templates"
+        },
+        {
+          glob: ".env",
+          input: ".",
+          output: "."
+        },
+        {
+          glob: "**/*",
+          input: "./prisma",
+          output: "prisma"
+        }
+      ],
+      optimization: true,
       outputHashing: 'none',
-      generatePackageJson: true,
+      generatePackageJson: false,
       sourceMaps: true,
       swcOptions: {
         jsc: {
@@ -50,7 +67,7 @@ module.exports = {
         module: {
           type: 'es6'
         },
-        sourceMaps: true,
+        sourceMaps: false,
         exclude: [
           '**/node_modules/@prisma/client/**',
           '**/node_modules/.prisma/**'

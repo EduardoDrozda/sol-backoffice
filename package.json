@@ -10,6 +10,7 @@
     "prisma:studio": "node scripts/prisma.js studio",
     "prisma:seed": "node scripts/prisma.js db seed",
     "api:dev": "nx run sol-backoffice.api:serve",
+    "api:build": "nx run sol-backoffice.api:build",
     "web:dev": "nx run sol-backoffice.web:serve",
     "web:build": "nx run sol-backoffice.web:build",
     "web:build:prod": "nx run sol-backoffice.web:build:production",

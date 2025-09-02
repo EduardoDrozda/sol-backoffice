@@ -37,7 +37,7 @@ export const envSchema = z
     EMAIL_PASSWORD: z.string(),
     EMAIL_FROM_NAME: z.string().default('Sistema'),
     EMAIL_FROM_ADDRESS: z.string(),
-    EMAIL_TEMPLATES_PATH: z.string().default('apps/sol-backoffice.api/src/common/email/templates'),
+    EMAIL_TEMPLATES_PATH: z.string().optional(),
 
     FRONTEND_URL: z.string().default('http://localhost:4200'),
     API_URL: z.string().default('http://localhost:8081'),
@@ -51,7 +51,7 @@ export const envSchema = z
   })
   .refine(
     (data) => {
-      if (data.STORAGE_PROVIDER !== 'local' || data.NODE_ENV === 'production') {
+      if (data.STORAGE_PROVIDER !== 'local' && data.NODE_ENV === 'production') {
         return !!data.STORAGE_CREDENTIALS_FILE;
       }
 

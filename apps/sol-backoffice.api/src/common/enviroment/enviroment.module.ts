@@ -7,7 +7,14 @@ import { validate } from './config-schema';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [path.resolve(__dirname, '..', '..', '..', '..', '.env')],
+      envFilePath: [
+        // Em produção, carrega do diretório atual (dist)
+        path.resolve(process.cwd(), '.env'),
+        // Em desenvolvimento, carrega do diretório da API
+        path.resolve(process.cwd(), 'apps/sol-backoffice.api/.env'),
+        // Fallback para outros casos
+        path.resolve(__dirname, '..', '..', '..', '..', '.env'),
+      ],
       validate,
       isGlobal: true,
     }),
